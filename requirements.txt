@@ -1,0 +1,25 @@
+einops
+flit
+h5py
+joblib
+joblib
+jupyterlab
+tensorboard
+librosa
+matplotlib
+numpy
+onnxruntime-gpu
+openpyxl # for saving results to excel
+pandas
+pesq
+pre-commit
+pystoi
+pyyaml
+scipy
+soundfile
+tabulate
+toml
+torchinfo
+tqdm
+accelerate
+thop
