@@ -1,6 +1,5 @@
 # Custom
 exp*
-data/
 *.log 
 *sge*
 *.err
@@ -17,9 +16,6 @@ tmp/
 
 # wavlm
 WavLM-Base+.pt
-
-# whisper
-small.pt
 
 # Ruff
 .ruff_cache/
