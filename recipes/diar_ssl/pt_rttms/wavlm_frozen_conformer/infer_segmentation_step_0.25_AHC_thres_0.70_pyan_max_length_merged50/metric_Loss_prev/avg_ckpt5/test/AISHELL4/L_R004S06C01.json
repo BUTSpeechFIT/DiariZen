@@ -1,0 +1,1493 @@
+[
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "0.013",
+        "end_time": "0.773",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "3.893",
+        "end_time": "4.013",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "4.013",
+        "end_time": "4.993",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "4.993",
+        "end_time": "7.033",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "6.333",
+        "end_time": "8.333",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "8.273",
+        "end_time": "8.353",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "8.352",
+        "end_time": "8.972",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "10.713",
+        "end_time": "11.392999999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "11.532",
+        "end_time": "37.852000000000004",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "34.573",
+        "end_time": "35.053",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "37.972",
+        "end_time": "46.132000000000005",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "44.052",
+        "end_time": "44.732",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "46.153",
+        "end_time": "53.693",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "49.812",
+        "end_time": "50.812",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "50.812",
+        "end_time": "52.012",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "52.013",
+        "end_time": "52.333",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "54.153",
+        "end_time": "61.113",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "61.612",
+        "end_time": "69.632",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "70.853",
+        "end_time": "78.73299999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "79.892",
+        "end_time": "83.35199999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "86.993",
+        "end_time": "90.753",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "92.892",
+        "end_time": "95.672",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "98.553",
+        "end_time": "103.65299999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "106.013",
+        "end_time": "113.173",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "113.713",
+        "end_time": "116.213",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "117.713",
+        "end_time": "120.31299999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "121.453",
+        "end_time": "124.753",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "126.793",
+        "end_time": "135.193",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "136.973",
+        "end_time": "144.27300000000002",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "146.993",
+        "end_time": "153.753",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "155.673",
+        "end_time": "158.513",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "162.793",
+        "end_time": "165.513",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "168.272",
+        "end_time": "173.31199999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "173.853",
+        "end_time": "177.03300000000002",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "181.272",
+        "end_time": "186.19199999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "189.113",
+        "end_time": "190.933",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "191.452",
+        "end_time": "196.832",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "197.892",
+        "end_time": "208.012",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "211.153",
+        "end_time": "217.813",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "218.353",
+        "end_time": "220.693",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "221.873",
+        "end_time": "224.233",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "226.153",
+        "end_time": "229.333",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "230.512",
+        "end_time": "233.612",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "234.793",
+        "end_time": "243.933",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "245.072",
+        "end_time": "248.552",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "249.713",
+        "end_time": "253.013",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "254.053",
+        "end_time": "263.133",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "264.092",
+        "end_time": "273.592",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "275.353",
+        "end_time": "280.753",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "281.332",
+        "end_time": "286.752",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "288.493",
+        "end_time": "295.313",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "295.873",
+        "end_time": "298.733",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "299.353",
+        "end_time": "304.993",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "306.553",
+        "end_time": "312.473",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "314.092",
+        "end_time": "321.852",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "322.493",
+        "end_time": "335.733",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "331.113",
+        "end_time": "331.193",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "331.192",
+        "end_time": "331.752",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "335.272",
+        "end_time": "336.632",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "337.212",
+        "end_time": "346.532",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "346.733",
+        "end_time": "355.833",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "356.173",
+        "end_time": "369.533",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "369.673",
+        "end_time": "376.653",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "376.853",
+        "end_time": "384.913",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "385.353",
+        "end_time": "388.753",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "389.252",
+        "end_time": "402.152",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "402.993",
+        "end_time": "428.373",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "428.873",
+        "end_time": "435.893",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "437.053",
+        "end_time": "447.793",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "448.592",
+        "end_time": "458.472",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "459.353",
+        "end_time": "476.613",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "466.312",
+        "end_time": "467.132",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "477.673",
+        "end_time": "486.973",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "488.212",
+        "end_time": "496.99199999999996",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "497.572",
+        "end_time": "507.472",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "502.113",
+        "end_time": "502.673",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "508.312",
+        "end_time": "509.892",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "510.913",
+        "end_time": "534.133",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "522.693",
+        "end_time": "522.933",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "535.453",
+        "end_time": "546.793",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "547.652",
+        "end_time": "560.772",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "5",
+        "start_time": "561.612",
+        "end_time": "573.4119999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "571.852",
+        "end_time": "571.992",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "573.412",
+        "end_time": "585.312",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "585.293",
+        "end_time": "609.453",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "610.412",
+        "end_time": "657.832",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "616.773",
+        "end_time": "616.953",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "643.652",
+        "end_time": "644.1120000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "659.312",
+        "end_time": "687.652",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "688.453",
+        "end_time": "690.333",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "693.572",
+        "end_time": "695.412",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "697.332",
+        "end_time": "731.952",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "732.892",
+        "end_time": "750.9720000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "751.892",
+        "end_time": "764.6120000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "766.033",
+        "end_time": "777.013",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "777.652",
+        "end_time": "781.392",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "778.672",
+        "end_time": "778.9920000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "781.912",
+        "end_time": "790.572",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "791.513",
+        "end_time": "795.313",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "797.892",
+        "end_time": "853.3520000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "854.412",
+        "end_time": "869.792",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "867.273",
+        "end_time": "867.553",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "870.112",
+        "end_time": "886.552",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "886.713",
+        "end_time": "894.913",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "895.332",
+        "end_time": "910.612",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "910.793",
+        "end_time": "931.513",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "918.412",
+        "end_time": "919.0120000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "4",
+        "start_time": "933.072",
+        "end_time": "963.672",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "966.493",
+        "end_time": "980.253",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "973.612",
+        "end_time": "974.232",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "979.132",
+        "end_time": "982.1719999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "982.773",
+        "end_time": "985.013",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "986.493",
+        "end_time": "993.373",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "993.693",
+        "end_time": "1056.453",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1017.832",
+        "end_time": "1017.992",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1038.533",
+        "end_time": "1039.0529999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1057.033",
+        "end_time": "1065.473",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1066.312",
+        "end_time": "1069.452",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1070.413",
+        "end_time": "1085.553",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1086.893",
+        "end_time": "1105.7730000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1106.832",
+        "end_time": "1135.912",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1137.633",
+        "end_time": "1138.0130000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1137.893",
+        "end_time": "1176.653",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1177.572",
+        "end_time": "1190.8719999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1192.413",
+        "end_time": "1205.633",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1207.213",
+        "end_time": "1216.033",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1216.033",
+        "end_time": "1218.6329999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1218.913",
+        "end_time": "1230.493",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1221.933",
+        "end_time": "1221.993",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1222.013",
+        "end_time": "1222.213",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1230.572",
+        "end_time": "1238.532",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1236.113",
+        "end_time": "1236.633",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1238.613",
+        "end_time": "1259.873",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1260.293",
+        "end_time": "1279.473",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1265.812",
+        "end_time": "1266.6119999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1279.592",
+        "end_time": "1282.852",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1283.473",
+        "end_time": "1311.793",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1310.273",
+        "end_time": "1310.5529999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1313.513",
+        "end_time": "1327.1329999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1327.453",
+        "end_time": "1343.233",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1339.393",
+        "end_time": "1339.653",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1343.673",
+        "end_time": "1363.433",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1363.453",
+        "end_time": "1385.5729999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1373.873",
+        "end_time": "1373.953",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1385.773",
+        "end_time": "1398.8529999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1395.173",
+        "end_time": "1395.933",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1399.133",
+        "end_time": "1405.693",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1405.753",
+        "end_time": "1413.693",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1413.733",
+        "end_time": "1417.933",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "3",
+        "start_time": "1418.713",
+        "end_time": "1468.393",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1420.153",
+        "end_time": "1420.813",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1447.273",
+        "end_time": "1447.793",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1464.713",
+        "end_time": "1465.033",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1470.832",
+        "end_time": "1486.632",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1487.193",
+        "end_time": "1507.133",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1508.013",
+        "end_time": "1517.0929999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1517.273",
+        "end_time": "1553.1329999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1553.513",
+        "end_time": "1560.973",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1561.773",
+        "end_time": "1561.793",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1561.793",
+        "end_time": "1562.3729999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1562.373",
+        "end_time": "1562.393",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1562.733",
+        "end_time": "1573.953",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1574.213",
+        "end_time": "1617.513",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1617.613",
+        "end_time": "1626.833",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1627.613",
+        "end_time": "1656.653",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1658.273",
+        "end_time": "1676.693",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1677.332",
+        "end_time": "1689.5520000000001",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "0",
+        "start_time": "1690.153",
+        "end_time": "1731.013",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1731.312",
+        "end_time": "1754.292",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1752.893",
+        "end_time": "1768.733",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1769.053",
+        "end_time": "1774.853",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1775.013",
+        "end_time": "1785.6129999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1785.793",
+        "end_time": "1793.3329999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1793.613",
+        "end_time": "1816.433",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1817.173",
+        "end_time": "1858.153",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1858.793",
+        "end_time": "1890.753",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1891.713",
+        "end_time": "1900.453",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1901.633",
+        "end_time": "1929.093",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1930.493",
+        "end_time": "1946.013",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "1946.993",
+        "end_time": "1947.6129999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1947.033",
+        "end_time": "1951.8129999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "1",
+        "start_time": "1947.273",
+        "end_time": "1947.5729999999999",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1953.553",
+        "end_time": "1964.093",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1965.553",
+        "end_time": "1973.093",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1974.013",
+        "end_time": "1980.993",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1981.993",
+        "end_time": "1993.273",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "1993.812",
+        "end_time": "2001.1319999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2002.253",
+        "end_time": "2014.8529999999998",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2015.493",
+        "end_time": "2022.893",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2023.653",
+        "end_time": "2030.433",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2031.153",
+        "end_time": "2033.693",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2034.553",
+        "end_time": "2047.813",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2048.833",
+        "end_time": "2052.1130000000003",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2053.793",
+        "end_time": "2063.273",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2064.073",
+        "end_time": "2071.093",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2071.753",
+        "end_time": "2080.873",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2082.052",
+        "end_time": "2084.772",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2085.753",
+        "end_time": "2090.433",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2091.172",
+        "end_time": "2096.472",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2097.653",
+        "end_time": "2103.473",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2104.092",
+        "end_time": "2106.4120000000003",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2107.012",
+        "end_time": "2112.092",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2113.092",
+        "end_time": "2123.452",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2124.233",
+        "end_time": "2138.813",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2139.812",
+        "end_time": "2148.312",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2148.892",
+        "end_time": "2162.672",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2163.233",
+        "end_time": "2168.0530000000003",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2169.873",
+        "end_time": "2174.433",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2175.573",
+        "end_time": "2180.133",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2182.033",
+        "end_time": "2182.173",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "2182.172",
+        "end_time": "2183.272",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "6",
+        "start_time": "2183.613",
+        "end_time": "2203.8129999999996",
+        "words": "dummy words"
+    },
+    {
+        "session_id": "L_R004S06C01",
+        "speaker": "2",
+        "start_time": "2203.812",
+        "end_time": "2203.9919999999997",
+        "words": "dummy words"
+    }
+]
