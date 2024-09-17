@@ -1,4 +1,6 @@
 ## Usage
+- download [WavLM Base+ model](https://github.com/microsoft/unilm/blob/master/wavlm/README.md)
+- download [ResNet34-LM model](https://huggingface.co/pyannote/wespeaker-voxceleb-resnet34-LM)
 - modify the path of used dataset and configuration file
 - run training, inference, and evaluation in one script. `bash -i run_stage.sh`
 
