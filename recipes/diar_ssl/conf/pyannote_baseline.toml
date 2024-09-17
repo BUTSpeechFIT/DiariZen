@@ -35,9 +35,9 @@ selected_channel = 0
 [train_dataset]
 path = "dataset.DiarizationDataset"
 [train_dataset.args]
-scp_file = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4/train/wav.scp"
-rttm_file = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4/train/rttm"
-uem_file = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4/train/all.uem"
+scp_file = "data/AMI_AliMeeting_AISHELL4/train/wav.scp"
+rttm_file = "data/AMI_AliMeeting_AISHELL4/train/rttm"
+uem_file = "data/AMI_AliMeeting_AISHELL4/train/all.uem"
 chunk_size = 8
 chunk_shift = 6
 sample_rate = 16000
@@ -51,9 +51,9 @@ pin_memory = true
 [validate_dataset]
 path = "dataset.DiarizationDataset"
 [validate_dataset.args]
-scp_file = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4/dev/wav.scp"
-rttm_file = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4/dev/rttm"
-uem_file = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4/dev/all.uem"
+scp_file = "data/AMI_AliMeeting_AISHELL4/dev/wav.scp"
+rttm_file = "data/AMI_AliMeeting_AISHELL4/dev/rttm"
+uem_file = "data/AMI_AliMeeting_AISHELL4/dev/all.uem"
 chunk_size = 8
 chunk_shift = 8
 sample_rate = 16000

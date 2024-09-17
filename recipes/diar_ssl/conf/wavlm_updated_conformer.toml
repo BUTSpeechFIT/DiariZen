@@ -34,7 +34,7 @@ lr = 1e-3
 [model]
 path = "diarizen.models.eend.model_wavlm_conformer.Model"
 [model.args]
-wavlm_dir = "/mnt/matylda3/ihan/project/DiariZen_dev/recipes/diar_ssl/wavlm/WavLM-Base+.pt"
+wavlm_dir = "/YOUR_PATH/WavLM-Base+.pt"
 wavlm_layer_num = 13
 wavlm_feat_dim = 768
 attention_in = 256
