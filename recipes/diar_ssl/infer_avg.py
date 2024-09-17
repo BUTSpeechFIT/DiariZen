@@ -354,22 +354,20 @@ if __name__ == "__main__":
         val_metric_lst_sorted = sorted(val_metric_lst, key=lambda i: i[args.val_metric])
         best_val_metric_idx = val_metric_lst.index(val_metric_lst_sorted[0])
         if args.val_mode == "best":
-            print(f'averaging the best {args.avg_ckpt_num} checkpoints...')
+            # print(f'averaging the best {args.avg_ckpt_num} checkpoints...')
             segmentation = val_metric_lst_sorted[:args.avg_ckpt_num]
         elif args.val_mode == "prev":
-            print(f'averaging previous {args.avg_ckpt_num} checkpoints to the converged moment...')
+            # print(f'averaging previous {args.avg_ckpt_num} checkpoints to the converged moment...')
             segmentation = val_metric_lst[
                 best_val_metric_idx - args.avg_ckpt_num + 1 :
                 best_val_metric_idx + 1
             ]
         else:
-            print(f'averaging {args.avg_ckpt_num} checkpoints around the converged moment...')
+            # print(f'averaging {args.avg_ckpt_num} checkpoints around the converged moment...')
             segmentation = val_metric_lst[
                 best_val_metric_idx - args.avg_ckpt_num // 2 :
                 best_val_metric_idx + args.avg_ckpt_num // 2 + 1
             ]
-        print(segmentation)
-        print(f'len(segmentation): {len(segmentation)} | args.avg_ckpt_num: {args.avg_ckpt_num}')
         assert len(segmentation) == args.avg_ckpt_num
     else:
         segmentation = args.segmentation_model
