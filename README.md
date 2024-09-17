@@ -14,6 +14,10 @@ pip install -r requirements.txt && pip install -e .
 
 # install pyannote-audio
 cd pyannote-audio && pip install -e .[dev,testing]
+
+# install score
+git submodule init
+git submodule update
 ```
 
 ## Usage
