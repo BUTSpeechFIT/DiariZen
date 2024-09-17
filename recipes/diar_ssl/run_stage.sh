@@ -58,7 +58,7 @@ if [ $stage -le 1 ]; then
     fi
 fi
 
-diarization_dir=$exp_root/$conf_name
+diarization_dir=$exp_root/$conf_name    # can be replaced by our pre-trained models, e.g. diarization_dir=/YOUR_PATH/checkpoints/wavlm_updated_conformer
 config_dir=`ls $diarization_dir/*.toml | sort -r | head -n 1`
 segmentation_model=$diarization_dir/checkpoints/best/pytorch_model.bin
 embedding_model=/YOUR_PATH/wespeaker-voxceleb-resnet34-LM/pytorch_model.bin
@@ -71,7 +71,7 @@ if [ $stage -le 2 ]; then
     cat $train_log | grep 'Loss/DER' | awk -F ']:' '{print $NF}' > $diarization_dir/val_metric_summary.lst
 
     for dset in AMI AliMeeting AISHELL4; do
-        conda activate test && python infer_avg.py -C $config_dir \
+        conda activate diarizen && python infer_avg.py -C $config_dir \
             -i ${data_dir}/${dtype}/${dset}/wav.scp \
             -o ${diarization_dir}/infer$infer_affix/metric_${val_metric}_${val_mode}/avg_ckpt${avg_ckpt_num}/${dtype}/${dset} \
             -u ${data_dir}/${dtype}/${dset}/all.uem \
