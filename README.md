@@ -27,7 +27,7 @@ git submodule update
 - `cd recipes/diar_ssl && bash -i run_stage.sh`
 
 ## Pre-trained 
-Our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCiyQNBeav1eEB1Uiv?e=wsBhVU). The local experimental path has been anonymized. To use the pre-trained models, please replace the [correspoinding path](https://github.com/BUTSpeechFIT/DiariZen/blob/main/recipes/diar_ssl/run_stage.sh#L61) in `diar_ssl/run_stage.sh` with your downloaded files.
+Our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCiyQNBeav1eEB1Uiv?e=wsBhVU). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
 
 ## Results
 ```
