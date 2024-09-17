@@ -448,9 +448,6 @@ class Trainer:
                 with self.accelerator.accumulate(self.model):
                     # You are responsible for calling `.backward()`, `.step()`, and `.zero_grad()` in your implementation
                     loss_dict = self.training_step(batch, batch_idx)
-
-                    # I guess we don't need to divide the loss by the number of gradient accumulation steps here
-                    # for visualization, we just plot the mean of mean of the loss of each batch
                     training_epoch_output.append(loss_dict)
 
                     if not self.accelerator.optimizer_step_was_skipped:
@@ -459,9 +456,6 @@ class Trainer:
 
                         if self.use_one_cycle_lr:
                             self.lr_one_cycle_scheduler.step() 
-
-                # if batch_idx == 20:
-                #     break
 
                 self.state.steps_trained += 1
             self.state.epochs_trained += 1
@@ -512,12 +506,7 @@ class Trainer:
 
         self.set_models_to_eval_mode()
 
-        # if not isinstance(dataloaders, list):
-        #     dataloaders = [dataloaders]
-
         validation_output = []
-        # for dataloader_idx, dataloader in enumerate(dataloaders):
-        #     dataloader_output = []
         for batch_idx, batch in enumerate(
             tqdm(
                 dataloader,

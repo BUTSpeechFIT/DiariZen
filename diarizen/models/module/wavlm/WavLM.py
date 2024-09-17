@@ -457,49 +457,6 @@ class WavLM(nn.Module):
         if ret_layer_results:
             feature = (feature, res["layer_results"])
         return feature, res["padding_mask"]
-    
-    def extract_features_mc_fusion(
-        self,
-        source: torch.Tensor,   # B, C, T
-        fusion_model: List[nn.Module] = None,   # multi-channel fusion model
-        padding_mask: Optional[torch.Tensor] = None,
-        mask: bool = False,
-        ret_conv: bool = False,
-        output_layer: Optional[int] = None,
-        ret_layer_results: bool = False,
-    ):
-        assert source.dim() == 3
-        num_channels = source.shape[1]
-
-        # print(f'self.training: {self.training}')
-        
-        layerwise_output = []
-        for i in range(num_channels):
-            # Conv
-            features = self.feature_extractor(source[:, i, :])
-            features = features.transpose(1, 2)
-            features = self.layer_norm(features)
-            # conv outputs --> transfomer inputs
-            features = self.post_extract_proj(features)
-            features = self.dropout_input(features)
-            layerwise_output.append(features)
-            
-        features = torch.stack(layerwise_output, 1)
-        x = features
-        x, layer_results = self.encoder.forward_mc_fusion(
-            x,
-            fusion_model,
-            padding_mask=None,
-            layer=None if output_layer is None else output_layer - 1
-        )
-
-        res = {"x": x, "padding_mask": padding_mask, "features": features, "layer_results": layer_results}
-
-        feature = res["features"] if ret_conv else res["x"]
-        if ret_layer_results:
-            feature = (feature, res["layer_results"])
-        return feature, res["padding_mask"]
-
 
 class ConvFeatureExtractionModel(nn.Module):
     def __init__(
@@ -736,73 +693,6 @@ class TransformerEncoder(nn.Module):
         x = x.transpose(0, 1)
 
         return x, layer_results
-    
-    def forward_mc_fusion(self, x, fusion_model, padding_mask=None, streaming_mask=None, layer=None):
-        x, layer_results = self.extract_features_mc_fusion(x, fusion_model, padding_mask, streaming_mask, layer)
-
-        if self.layer_norm_first and layer is None:
-            x = self.layer_norm(x)
-
-        return x, layer_results
-    
-    def extract_features_mc_fusion(self, x, fusion_model, padding_mask=None, streaming_mask=None, tgt_layer=None):
-        assert x.dim() == 4     # multi-channel input
-        num_channels = x.shape[1]
-        num_fusions = len(fusion_model)
-        fusion_model_idx = 0
-        channel_output = []
-        for ch in range(num_channels):
-            y = x[:, ch, ...]   # single-channel output
-            if padding_mask is not None:
-                y[padding_mask] = 0
-            
-            y_conv = self.pos_conv(y.transpose(1, 2))
-            y_conv = y_conv.transpose(1, 2)
-            y = y + y_conv
-    
-            if not self.layer_norm_first:
-                y = self.layer_norm(y)
-    
-            y = F.dropout(y, p=self.dropout, training=self.training)
-            channel_output.append(y)
-            
-        # channel_output = [out.transpose(0, 1) for out in channel_output]    
-        x = torch.stack(channel_output, 1)
-        x, x_mean = fusion_model[fusion_model_idx](x)
-        fusion_model_idx += 1
-        layer_results = []
-        z = None
-        if tgt_layer is not None:
-            layer_results.append((x_mean, z))
-        pos_bias = None
-        for i, layer in enumerate(self.layers):
-            dropout_probability = np.random.random()
-            if not self.training or (dropout_probability > self.layerdrop):
-                channel_output = []
-                if fusion_model_idx < num_fusions:
-                    for ch in range(num_channels):
-                        y = x[:, ch, ...] 
-                        y = y.transpose(0, 1)   # B x T x C -> T x B x C
-                        y, z, pos_bias = layer(y, self_attn_padding_mask=padding_mask, need_weights=False,
-                                                  self_attn_mask=streaming_mask, pos_bias=pos_bias)
-                            
-                        channel_output.append(y.transpose(0, 1))
-                    x = torch.stack(channel_output, 1)
-                    x, x_mean = fusion_model[fusion_model_idx](x)
-                    layer_results.append((x_mean, z))
-                else:
-                    y = torch.mean(x, 1).transpose(0, 1) if fusion_model_idx == num_fusions else y
-                    y, z, pos_bias = layer(y, self_attn_padding_mask=padding_mask, need_weights=False,
-                                           self_attn_mask=streaming_mask, pos_bias=pos_bias)
-                    x_mean = y.transpose(0, 1)
-                    layer_results.append((y.transpose(0, 1), z))
-                fusion_model_idx += 1
-            else:
-                layer_results.append((x_mean, z))
-        # T x B x C -> B x T x C
-        y = y.transpose(0, 1)
-
-        return y, layer_results
 
 class TransformerSentenceEncoderLayer(nn.Module):
     """

@@ -130,7 +130,7 @@ def average_states(
 
 
 class Model(nn.Module):
-    """ A simple model wrapper for pyannote.audio.core.model
+    """ A simple model wrapper to pyannote.audio.core.model
     
     See: https://github.com/pyannote/pyannote-audio/blob/develop/pyannote/audio/core/model.py
     """
@@ -178,7 +178,7 @@ class Model(nn.Module):
         self.validation_metric = MetricCollection(self.default_metric())
     
     @cached_property
-    def _receptive_field(self) -> SlidingWindow:     # def receptive_field(self) -> SlidingWindow: ... doesn't work
+    def _receptive_field(self) -> SlidingWindow:     
         """(Internal) frames"""
 
         receptive_field_size = self.receptive_field_size(num_frames=1)

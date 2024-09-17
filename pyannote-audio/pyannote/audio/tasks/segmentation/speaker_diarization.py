@@ -363,9 +363,6 @@ class SpeakerDiarization(SegmentationTask):
 
         end = np.minimum(chunk_annotations["end"], chunk.end) - chunk.start - half
         end_idx = np.round(end / step).astype(int)
-        print(f'file_id: {file_id} | new_chunks - chunk.start: {chunk.start} | chunk.end: {chunk.end}')
-        print(f'file_id: {file_id} | new_chunks - chunk_annotations["start"]: {chunk_annotations["start"]} | chunk_annotations["end"]: {chunk_annotations["end"]}')
-        print(f'file_id: {file_id} | new_chunks - start: {start} | end: {end} | start_idx: {start_idx} | end_idx: {end_idx}')
 
         # get list and number of labels for current scope
         labels = list(np.unique(chunk_annotations[label_scope_key]))
@@ -387,7 +384,6 @@ class SpeakerDiarization(SegmentationTask):
         ):
             mapped_label = mapping[label]
             y[start : end + 1, mapped_label] = 1
-            # print(f'file_id: {file_id} | y: {y.shape} | start: {start} | end: {end} | mapped_label: {mapped_label}')
 
         sample["y"] = SlidingWindowFeature(y, self.model.receptive_field, labels=labels)
 

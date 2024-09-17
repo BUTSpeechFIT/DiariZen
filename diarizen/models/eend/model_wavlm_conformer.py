@@ -134,7 +134,7 @@ class Model(BaseModel):
         return self.wavlm_model.receptive_field_center(frame=frame)
     
     @property
-    def get_rf_info(self, sample_rate=16000):     # def receptive_field(self) -> SlidingWindow: ... doesn't work
+    def get_rf_info(self, sample_rate=16000):     
         """Return receptive field info to dataset
         """
 
@@ -169,7 +169,7 @@ class Model(BaseModel):
 
         Parameters
         ----------
-        waveforms : (batch, sample) or (batch, channel, sample)
+        waveforms : (batch, channel, sample)
 
         Returns
         -------

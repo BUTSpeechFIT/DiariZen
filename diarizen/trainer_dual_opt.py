@@ -403,10 +403,6 @@ class Trainer:
         """
         early_stop_mark = torch.zeros(1, device=self.device)
 
-        # if self.debug:
-        #     logger.info("Debug mode is on")
-        #     DebugUnderflowOverflow(self.model)
-
         # Setting up training control variables
         steps_per_epoch = len(train_dataloader)
         update_steps_per_epoch = steps_per_epoch // self.gradient_accumulation_steps
@@ -474,9 +470,6 @@ class Trainer:
                 with self.accelerator.accumulate(self.model):
                     # You are responsible for calling `.backward()`, `.step()`, and `.zero_grad()` in your implementation
                     loss_dict = self.training_step(batch, batch_idx)
-
-                    # I guess we don't need to divide the loss by the number of gradient accumulation steps here
-                    # for visualization, we just plot the mean of mean of the loss of each batch
                     training_epoch_output.append(loss_dict)
 
                     if not self.accelerator.optimizer_step_was_skipped:
@@ -484,14 +477,8 @@ class Trainer:
                             self.lr_scheduler_step()
 
                         if self.use_one_cycle_lr:
-                            # if self.accelerator.is_local_main_process:
-                            #     self.writer.add_scalar(f"Train_Step/one_cycle_lr_wavlm", get_rate(self.optimizer_small), self.state.steps_trained)
-                            #     self.writer.add_scalar(f"Train_Step/one_cycle_lr_big", get_rate(self.optimizer_big), self.state.steps_trained)
                             self.lr_one_cycle_scheduler_small.step() 
                             self.lr_one_cycle_scheduler_big.step() 
-
-                # if batch_idx == 20:
-                #     break
 
                 self.state.steps_trained += 1
             self.state.epochs_trained += 1
@@ -543,12 +530,7 @@ class Trainer:
 
         self.set_models_to_eval_mode()
 
-        # if not isinstance(dataloaders, list):
-        #     dataloaders = [dataloaders]
-
         validation_output = []
-        # for dataloader_idx, dataloader in enumerate(dataloaders):
-        #     dataloader_output = []
         for batch_idx, batch in enumerate(
             tqdm(
                 dataloader,
