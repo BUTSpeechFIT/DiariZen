@@ -35,23 +35,27 @@ collar=0s
 --------------------------------------------------------------
 System         Features       AMI   AISHELL-4   AliMeeting         
 --------------------------------------------------------------
-Pyannote3       SincNet       22.5     14.4       25.1
+Pyannote3       SincNet       21.3     13.7       23.7
 
-Proposed         Fbank        21.7     13.0       22.7
-              WavLM-frozen    19.1     12.5       20.3
-              WavLM-updated   17.5     12.4       18.3
+Proposed         Fbank        19.8     12.2       21.0
+              WavLM-frozen    17.0     11.6       18.7
+              WavLM-updated   15.4     11.5       16.0
 --------------------------------------------------------------
 
 collar=0.25s 
 --------------------------------------------------------------
 System         Features       AMI   AISHELL-4   AliMeeting         
 --------------------------------------------------------------
-Pyannote3       SincNet       14.6     8.1       15.4
+Pyannote3       SincNet       13.8     7.5       14.5
 
-Proposed         Fbank        14.4     7.2       13.5
-              WavLM-frozen    12.5     6.6       11.8
-              WavLM-updated   11.3     6.4       8.9
+Proposed         Fbank        13.1     6.6       12.4
+              WavLM-frozen    10.9     5.9       10.8
+              WavLM-updated    9.9     5.7        8.2
 --------------------------------------------------------------
+Note:
+The results above are different from our ICASSP submission. 
+We made a few updates to experimental numbers on AMI/AISHELL-4/AliMeeting datasets. 
+The conclusions in our paper are as same as the orginial ones.
 ```
 
 ## Citation
