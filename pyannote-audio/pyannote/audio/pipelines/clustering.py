@@ -302,7 +302,7 @@ class AgglomerativeClustering(BaseClustering):
         self,
         metric: str = "cosine",
         max_num_embeddings: int = np.inf,
-        constrained_assignment: bool = False,
+        constrained_assignment: bool = True,   # default: false
     ):
         super().__init__(
             metric=metric,
