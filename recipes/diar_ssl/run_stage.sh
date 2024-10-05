@@ -30,8 +30,9 @@ pyan_max_length_merged=50
 pyan_inf_max_batch=32
 
 cluster_threshold=0.70
-segmentation_step=0.25
-infer_affix=_segmentation_step_${segmentation_step}_AHC_thres_${cluster_threshold}_pyan_max_length_merged${pyan_max_length_merged}
+segmentation_step=0.1
+min_cluster_size=30
+infer_affix=_constrained_AHC_segmentation_step_${segmentation_step}_min_cluster_size_${min_cluster_size}_AHC_thres_${cluster_threshold}_pyan_max_length_merged${pyan_max_length_merged}
 
 avg_ckpt_num=5
 val_metric=Loss   # Loss or DER
@@ -80,6 +81,7 @@ if [ $stage -le 2 ]; then
             --val_mode $val_mode \
             --val_metric_summary $diarization_dir/val_metric_summary.lst \
             --segmentation_step $segmentation_step \
+            --min_cluster_size $min_cluster_size \
             --cluster_threshold $cluster_threshold \
             --segmentation_model $segmentation_model \
             --embedding_model $embedding_model \
