@@ -55,7 +55,7 @@ Proposed         Fbank        13.1     6.6       12.4
 Note:
 The results above are different from our ICASSP submission. 
 We made a few updates to experimental numbers on AMI/AISHELL-4/AliMeeting datasets. 
-The conclusions in our paper are as same as the orginial ones.
+The conclusions in our paper are as same as the original ones.
 ```
 
 ## Citation
