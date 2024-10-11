@@ -59,7 +59,8 @@ The conclusions in our paper are as same as the original ones.
 ```
 
 ## Citation
-If you found this work helpful, please consider citing
+If you found this work helpful, please consider citing:
+J. Han, F. Landini, J. Rohdin, A. Silnova, M. Diez, and L. Burget, [Leveraging Self-Supervised Learning for Speaker Diarization](https://arxiv.org/pdf/2409.09408), arXiv preprint arXiv:2409.09408, 2024.
 ```
 @article{han2024leveragingselfsupervisedlearningspeaker,
       title={Leveraging Self-Supervised Learning for Speaker Diarization}, 
