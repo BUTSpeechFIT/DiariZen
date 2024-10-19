@@ -21,7 +21,7 @@ git submodule update
 ```
 
 ## Datasets
-We use **SDM (first channel from the first far-field microphone array)** data from public [AMI](https://github.com/pyannote/AMI-diarization-setup/tree/main/pyannote), [AISHELL-4](https://www.openslr.org/111/), and [AliMeeting](https://openslr.org/119/) for model training and evaluation. Please download these datasets firstly. Our [data partition](https://github.com/BUTSpeechFIT/DiariZen/tree/main/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4) is also provided.
+We use **SDM (first channel from the first far-field microphone array)** data from public [AMI](https://github.com/pyannote/AMI-diarization-setup/tree/main/pyannote), [AISHELL-4](https://www.openslr.org/111/), and [AliMeeting](https://openslr.org/119/) for model training and evaluation. Please download these datasets firstly. Our data partition is [here](https://github.com/BUTSpeechFIT/DiariZen/tree/main/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4).
 
 ## Usage
 - download [WavLM Base+ model](https://github.com/microsoft/unilm/blob/master/wavlm/README.md)
