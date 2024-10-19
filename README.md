@@ -59,7 +59,7 @@ Pyannote3       SincNet       13.7     7.7       13.6
 
 Proposed         Fbank        12.9     6.9       12.6
               WavLM-frozen    10.9     6.1       12.0
-              WavLM-updated    9.8     5.9       10.0
+              WavLM-updated    9.8     5.9       10.2
 --------------------------------------------------------------
 Note:
 The results above are different from our ICASSP submission. 
