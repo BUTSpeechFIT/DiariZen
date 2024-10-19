@@ -16,6 +16,7 @@ from pyannote.metrics.segmentation import Annotation, Segment
 from pyannote.audio.pipelines import SpeakerDiarization as SpeakerDiarizationPipeline
 from pyannote.audio.utils.signal import Binarize
 
+import torch
 
 def scp2path(scp_file):
     """ return path list """
@@ -95,6 +96,7 @@ def diarize_session(
 ):
     print('Extracting segmentations...')
     waveform, sample_rate = torchaudio.load(wav_files[0])
+    waveform = torch.unsqueeze(waveform[0], 0)      # force to use the SDM data
     segmentations = pipeline.get_segmentations({"waveform": waveform, "sample_rate": sample_rate}, soft=False)
 
     # binarize segmentation
