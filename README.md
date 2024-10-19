@@ -30,8 +30,8 @@ We use **SDM (first channel from the first far-field microphone array)** data fr
 - `cd recipes/diar_ssl && bash -i run_stage.sh`
 
 ## Pre-trained 
-- our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCiyQNBeav1eEB1Uiv?e=wsBhVU). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
-- in case you have trouble reproducing our experiments, we also provide the [intermediate results](https://onedrive.live.com/?authkey=%21APzNfdtjBpOxoTc&id=826B145A171F335F%211486&cid=826B145A171F335F) of `EN2002a`, an AMI test recording,  during inference for debugging.   
+- our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCi1W9tTb7TGcy1b_a?e=8pcjK0). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
+- in case you have trouble reproducing our experiments, we also provide the [intermediate results](https://1drv.ms/f/s!Al8zHxdaFGuCi078zX3bYwaTsaE3?e=moycQ7) of `EN2002a`, an AMI test recording,  during inference for debugging.   
 
 ## Results (SDM)
 We aim to make the whole pipeline as simple as possible. Therefore, for the results below: 
