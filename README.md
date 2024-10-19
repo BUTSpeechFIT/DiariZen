@@ -20,6 +20,9 @@ git submodule init
 git submodule update
 ```
 
+## Datasets
+We use **SDM (first channel from the first far-field microphone array)** data from public [AMI](https://github.com/pyannote/AMI-diarization-setup/tree/main/pyannote), [AISHELL-4](https://www.openslr.org/111/), and [AliMeeting](https://openslr.org/119/) for model training and evaluation. Please download these datasets firstly. Our [data partition](https://github.com/BUTSpeechFIT/DiariZen/tree/main/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4) is also provided.
+
 ## Usage
 - download [WavLM Base+ model](https://github.com/microsoft/unilm/blob/master/wavlm/README.md)
 - download [ResNet34-LM model](https://huggingface.co/pyannote/wespeaker-voxceleb-resnet34-LM)
@@ -27,10 +30,16 @@ git submodule update
 - `cd recipes/diar_ssl && bash -i run_stage.sh`
 
 ## Pre-trained 
-Our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCiyQNBeav1eEB1Uiv?e=wsBhVU). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
+- our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCiyQNBeav1eEB1Uiv?e=wsBhVU). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
+- in case you have trouble reproducing our experiments, we also provide the [intermediate results](https://onedrive.live.com/?authkey=%21APzNfdtjBpOxoTc&id=826B145A171F335F%211486&cid=826B145A171F335F) of `EN2002a`, an AMI test recording,  during inference for debugging.   
 
-## Results
-```
+## Results (SDM)
+We aim to make the whole pipeline as simple as possible. Therefore, for the results below: 
+- we **did not** use any simulated data
+- we **did not** apply advanced learning scheduler strategies
+- we **did not** perform further domain adaptation to each dataset 
+- all experiments share the **same hyper-parameters** for clustering
+``` 
 collar=0s                           
 --------------------------------------------------------------
 System         Features       AMI   AISHELL-4   AliMeeting         
@@ -54,8 +63,7 @@ Proposed         Fbank        12.9     6.9       12.6
 --------------------------------------------------------------
 Note:
 The results above are different from our ICASSP submission. 
-We made a few updates to experimental numbers on AMI/AISHELL-4/AliMeeting datasets. 
-The conclusions in our paper are as same as the original ones.
+We made a few updates to experimental numbers but the conclusions in our paper are as same as the original ones.
 ```
 
 ## Citation
