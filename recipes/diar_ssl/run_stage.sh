@@ -62,7 +62,7 @@ fi
 diarization_dir=$exp_root/$conf_name    # can be replaced by our pre-trained models, e.g. diarization_dir=/YOUR_PATH/checkpoints/wavlm_updated_conformer
 config_dir=`ls $diarization_dir/*.toml | sort -r | head -n 1`
 segmentation_model=$diarization_dir/checkpoints/best/pytorch_model.bin
-embedding_model=/YOUR_PATH/wespeaker-voxceleb-resnet34-LM/pytorch_model.bin
+embedding_model=/YOUR_PATH/pretrained/pyannote3/wespeaker-voxceleb-resnet34-LM/pytorch_model.bin     # it's necessary to have "pyannote" in your directory path
 
 if [ $stage -le 2 ]; then
     echo "stage2: model inference..."
