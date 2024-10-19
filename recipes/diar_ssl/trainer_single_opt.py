@@ -96,7 +96,6 @@ class Trainer(BaseTrainer):
             val_Miss = val_metrics['DiarizationErrorRate/Miss']
             val_Confusion = val_metrics['DiarizationErrorRate/Confusion']
         else:
-            # self.accelerator.print('Silent all the time. Ignore the metrics...')
             val_DER = torch.zeros_like(val_metrics['DiarizationErrorRate'])
             val_FA = torch.zeros_like(val_metrics['DiarizationErrorRate/FalseAlarm'])
             val_Miss = torch.zeros_like(val_metrics['DiarizationErrorRate/Miss'])

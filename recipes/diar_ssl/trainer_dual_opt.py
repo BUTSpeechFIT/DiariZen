@@ -76,7 +76,6 @@ class Trainer(BaseTrainer):
         sil_all_target = torch.zeros_like(target)
 
         y_pred = self.model(xs)
-        # self.accelerator.print(f'xs: {xs.shape} | target: {target.shape} | y_pred: {y_pred.shape}')
         # powerset
         multilabel = self.unwrap_model.powerset.to_multilabel(y_pred)
         permutated_target, _ = permutate(multilabel, target)
@@ -98,14 +97,10 @@ class Trainer(BaseTrainer):
             val_Miss = val_metrics['DiarizationErrorRate/Miss']
             val_Confusion = val_metrics['DiarizationErrorRate/Confusion']
         else:
-            # self.accelerator.print('Silent all the time. Ignore the metrics...')
             val_DER = torch.zeros_like(val_metrics['DiarizationErrorRate'])
             val_FA = torch.zeros_like(val_metrics['DiarizationErrorRate/FalseAlarm'])
             val_Miss = torch.zeros_like(val_metrics['DiarizationErrorRate/Miss'])
             val_Confusion = torch.zeros_like(val_metrics['DiarizationErrorRate/Confusion'])
-
-            # names = batch['names']
-            # self.accelerator.print(f'names: {names} | loss: {loss} | FA: {val_FA} | MISS: {val_Miss} | Confusion: {val_Confusion} | DER: {val_DER}')
 
         return {"Loss": loss, "DER": val_DER, "FA": val_FA, "Miss": val_Miss, "Confusion": val_Confusion}
 
@@ -123,5 +118,4 @@ class Trainer(BaseTrainer):
         logger.info(f"Validation Loss/DER on epoch {self.state.epochs_trained}: {round(Loss_val.item(), 3)} / {round(DER_val.item(), 3)}")
         # metric reset
         self.unwrap_model.validation_metric.reset()
-        # return DER_val
         return Loss_val
