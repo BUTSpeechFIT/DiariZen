@@ -15,6 +15,7 @@ from diarizen.utils import instantiate
 from diarizen.ckpt_utils import average_ckpt
 
 from dataset import _collate_fn
+from functools import partial
 
 def run(config, resume):
     init_logging_logger(config)
@@ -60,17 +61,22 @@ def run(config, resume):
     validate_dataset_config["model_rf_duration"] = model_rf_duration
     validate_dataset_config["model_rf_step"] = model_rf_step
 
+    collate_fn_partial = partial(
+        _collate_fn, 
+        max_speakers_per_chunk=config["model"]["args"]["max_speakers_per_chunk"]
+    )
+
     if "train" in args.mode:
         train_dataset = instantiate(config["train_dataset"]["path"], args=train_dataset_config)
         train_dataloader = DataLoader(
-            dataset=train_dataset, collate_fn=_collate_fn, shuffle=True, **config["train_dataset"]["dataloader"]
+            dataset=train_dataset, collate_fn=collate_fn_partial, shuffle=True, **config["train_dataset"]["dataloader"]
         )
         train_dataloader = accelerator.prepare(train_dataloader)
 
     if "train" in args.mode or "validate" in args.mode:
         validate_dataset = instantiate(config["validate_dataset"]["path"], args=validate_dataset_config)
         validate_dataloader = DataLoader(
-            dataset=validate_dataset, collate_fn=_collate_fn, shuffle=False, **config["validate_dataset"]["dataloader"]
+            dataset=validate_dataset, collate_fn=collate_fn_partial, shuffle=False, **config["validate_dataset"]["dataloader"]
         )
         validate_dataloader = accelerator.prepare(validate_dataloader)
  
