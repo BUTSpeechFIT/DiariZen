@@ -61,7 +61,6 @@ fi
 
 diarization_dir=$exp_root/$conf_name    # can be replaced by our pre-trained models, e.g. diarization_dir=/YOUR_PATH/checkpoints/wavlm_updated_conformer
 config_dir=`ls $diarization_dir/*.toml | sort -r | head -n 1`
-segmentation_model=$diarization_dir/checkpoints/best/pytorch_model.bin
 embedding_model=/YOUR_PATH/pretrained/pyannote3/wespeaker-voxceleb-resnet34-LM/pytorch_model.bin     # it's necessary to have "pyannote" in your directory path
 
 if [ $stage -le 2 ]; then
@@ -83,7 +82,6 @@ if [ $stage -le 2 ]; then
             --segmentation_step $segmentation_step \
             --min_cluster_size $min_cluster_size \
             --cluster_threshold $cluster_threshold \
-            --segmentation_model $segmentation_model \
             --embedding_model $embedding_model \
             --merge_closer $pyan_merge_closer \
             --max_length_merged $pyan_max_length_merged \
