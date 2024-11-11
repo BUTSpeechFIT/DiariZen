@@ -46,6 +46,7 @@ chunk_size = 8
 use_posi = false
 output_activate_function = false
 selected_channel = 0
+max_speakers_per_chunk = 4
 
 [train_dataset]
 path = "dataset.DiarizationDataset"

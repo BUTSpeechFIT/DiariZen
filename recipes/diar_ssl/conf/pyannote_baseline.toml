@@ -31,6 +31,7 @@ path = "diarizen.models.eend.model_pyannote.Model"
 [model.args]
 chunk_size = 8
 selected_channel = 0
+max_speakers_per_chunk = 4
 
 [train_dataset]
 path = "dataset.DiarizationDataset"
