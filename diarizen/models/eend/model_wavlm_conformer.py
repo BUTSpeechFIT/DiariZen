@@ -13,6 +13,7 @@ from pyannote.audio.core.model import Model as BaseModel
 
 from diarizen.models.module.conformer import ConformerEncoder
 from diarizen.models.module.wavlm.WavLM import WavLM, WavLMConfig
+from diarizen.models.module.wavlm.config import Config_WavLM_Base 
 
 
 class Model(BaseModel):
@@ -148,10 +149,14 @@ class Model(BaseModel):
         return num_frames, duration, step
 
     def load_wavlm(self, wavlm_dir):
-        checkpoint = torch.load(wavlm_dir)
-        cfg = WavLMConfig(checkpoint['cfg'])
-        model = WavLM(cfg)
-        model.load_state_dict(checkpoint['model'])
+        if wavlm_dir is not None:
+            checkpoint = torch.load(wavlm_dir)
+            cfg = WavLMConfig(checkpoint['cfg'])
+            model = WavLM(cfg)
+            model.load_state_dict(checkpoint['model'])
+        else:   # use the default config
+            cfg = WavLMConfig(Config_WavLM_Base)
+            model = WavLM(cfg)
         return model, cfg
     
     def wav2wavlm(self, in_wav, model, cfg):
