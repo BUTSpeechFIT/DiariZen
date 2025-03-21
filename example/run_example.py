@@ -4,7 +4,7 @@ from diarizen.pipelines.inference import DiariZenPipeline
 diar_pipeline = DiariZenPipeline.from_pretrained("BUT-FIT/diarizen-meeting-base")
 
 # apply diarization pipeline
-diar_results = diar_pipeline('EN2002a.Array1-01.wav')
+diar_results = diar_pipeline('EN2002a_30s.wav')
 
 # print results
 for turn, _, speaker in diar_results.itertracks(yield_label=True):
@@ -20,4 +20,4 @@ diar_pipeline = DiariZenPipeline.from_pretrained(
         rttm_out_dir='.'
 )
 # apply diarization pipeline
-diar_results = diar_pipeline('EN2002a.Array1-01.wav', sess_name='EN2002a')
+diar_results = diar_pipeline('EN2002a_30s.wav', sess_name='EN2002a')
