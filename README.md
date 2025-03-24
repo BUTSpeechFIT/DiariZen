@@ -29,9 +29,11 @@ We use **SDM (first channel from the first far-field microphone array)** data fr
 - modify the path of used dataset and configuration file
 - `cd recipes/diar_ssl && bash -i run_stage.sh`
 
+
 ## Pre-trained 
-- our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCi1W9tTb7TGcy1b_a?e=8pcjK0). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
-- in case you have trouble reproducing our experiments, we also provide the [intermediate results](https://1drv.ms/f/s!Al8zHxdaFGuCi078zX3bYwaTsaE3?e=moycQ7) of `EN2002a`, an AMI test recording,  during inference for debugging.   
+- Our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCi1W9tTb7TGcy1b_a?e=8pcjK0). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
+- In case you have trouble reproducing our experiments, we also provide the [intermediate results](https://1drv.ms/f/s!Al8zHxdaFGuCi078zX3bYwaTsaE3?e=moycQ7) of `EN2002a`, an AMI test recording,  during inference for debugging.   
+- Our model also supports for [Hugging Face](https://huggingface.co/BUT-FIT/diarizen-meeting-base) 🤗. Please check `example/run_example.py`.
 
 ## Results (SDM)
 We aim to make the whole pipeline as simple as possible. Therefore, for the results below: 
@@ -68,13 +70,15 @@ We made a few updates to experimental numbers but the conclusions in our paper a
 
 ## Citation
 If you found this work helpful, please consider citing:
-J. Han, F. Landini, J. Rohdin, A. Silnova, M. Diez, and L. Burget, [Leveraging Self-Supervised Learning for Speaker Diarization](https://arxiv.org/pdf/2409.09408), arXiv preprint arXiv:2409.09408, 2024.
+J. Han, F. Landini, J. Rohdin, A. Silnova, M. Diez, and L. Burget, [Leveraging Self-Supervised Learning for Speaker Diarization](https://arxiv.org/pdf/2409.09408), in Proc. ICASSP. IEEE, 2025, pp. 1–5.
 ```
-@article{han2024leveragingselfsupervisedlearningspeaker,
-      title={Leveraging Self-Supervised Learning for Speaker Diarization}, 
-      author={Jiangyu Han and Federico Landini and Johan Rohdin and Anna Silnova and Mireia Diez and Lukas Burget},
-      journal={arXiv preprint arXiv:2409.09408},
-      year={2024}
+@inproceedings{han2025leveraging,
+  title={Leveraging self-supervised learning for speaker diarization},
+  author={Han, Jiangyu and Landini, Federico and Rohdin, Johan and Silnova, Anna and Diez, Mireia and Burget, Luk{\'a}{\v{s}}},
+  booktitle={ICASSP 2025-2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  pages={1--5},
+  year={2025},
+  organization={IEEE}
 }
 ```
 
