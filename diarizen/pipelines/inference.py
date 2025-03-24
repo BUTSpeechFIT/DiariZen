@@ -1,5 +1,6 @@
 # Licensed under the MIT license.
 # Adopted from https://github.com/espnet/espnet/blob/master/egs2/chime8_task1/diar_asr1/local/pyannote_diarize.py
+# Copyright 2020 CNRS (author: Herve Bredin, herve.bredin@irit.fr)
 # Copyright 2025 Brno University of Technology (author: Jiangyu Han, ihan@fit.vut.cz)
 
 import toml 
