@@ -70,16 +70,15 @@ We made a few updates to experimental numbers but the conclusions in our paper a
 
 ## Citation
 If you found this work helpful, please consider citing:
-J. Han, F. Landini, J. Rohdin, A. Silnova, M. Diez, and L. Burget, [Leveraging Self-Supervised Learning for Speaker Diarization](https://arxiv.org/pdf/2409.09408), in Proc. ICASSP. IEEE, 2025, pp. 1–5.
+J. Han, F. Landini, J. Rohdin, A. Silnova, M. Diez, and L. Burget, [Leveraging Self-Supervised Learning for Speaker Diarization](https://arxiv.org/pdf/2409.09408), in Proc. ICASSP, 2025.
 ```
 @inproceedings{han2025leveraging,
   title={Leveraging self-supervised learning for speaker diarization},
   author={Han, Jiangyu and Landini, Federico and Rohdin, Johan and Silnova, Anna and Diez, Mireia and Burget, Luk{\'a}{\v{s}}},
-  booktitle={ICASSP 2025-2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
-  pages={1--5},
-  year={2025},
-  organization={IEEE}
+  booktitle={Proc. ICASSP},
+  year={2025}
 }
+
 ```
 
 
