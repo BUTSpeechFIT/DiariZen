@@ -24,16 +24,33 @@ git submodule update
 We use **SDM (first channel from the first far-field microphone array)** data from public [AMI](https://github.com/pyannote/AMI-diarization-setup/tree/main/pyannote), [AISHELL-4](https://www.openslr.org/111/), and [AliMeeting](https://openslr.org/119/) for model training and evaluation. Please download these datasets firstly. Our data partition is [here](https://github.com/BUTSpeechFIT/DiariZen/tree/main/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4).
 
 ## Usage
-- download [WavLM Base+ model](https://github.com/microsoft/unilm/blob/master/wavlm/README.md)
-- download [ResNet34-LM model](https://huggingface.co/pyannote/wespeaker-voxceleb-resnet34-LM)
-- modify the path of used dataset and configuration file
-- `cd recipes/diar_ssl && bash -i run_stage.sh`
+Our model supports for [Hugging Face](https://huggingface.co/BUT-FIT/diarizen-meeting-base) 🤗. See below: 
+```python
+from diarizen.pipelines.inference import DiariZenPipeline
 
+# load pre-trained model
+diar_pipeline = DiariZenPipeline.from_pretrained("BUT-FIT/diarizen-meeting-base")
 
-## Pre-trained 
-- Our pre-trained checkpoints and the estimated rttm files can be found [here](https://1drv.ms/f/s!Al8zHxdaFGuCi1W9tTb7TGcy1b_a?e=8pcjK0). The local experimental path has been anonymized. To use the pre-trained models, please check the `diar_ssl/run_stage.sh`.
-- In case you have trouble reproducing our experiments, we also provide the [intermediate results](https://1drv.ms/f/s!Al8zHxdaFGuCi078zX3bYwaTsaE3?e=moycQ7) of `EN2002a`, an AMI test recording,  during inference for debugging.   
-- Our model also supports for [Hugging Face](https://huggingface.co/BUT-FIT/diarizen-meeting-base) 🤗. Please check `example/run_example.py`.
+# apply diarization pipeline
+diar_results = diar_pipeline('./example/EN2002a_30s.wav')
+
+# print results
+for turn, _, speaker in diar_results.itertracks(yield_label=True):
+    print(f"start={turn.start:.1f}s stop={turn.end:.1f}s speaker_{speaker}")
+# start=0.0s stop=1.7s speaker_0
+# start=0.0s stop=0.7s speaker_1
+# start=0.8s stop=8.0s speaker_4
+# ...
+
+# load pre-trained model and save RTTM result
+diar_pipeline = DiariZenPipeline.from_pretrained(
+        "BUT-FIT/diarizen-meeting-base",
+        rttm_out_dir='.'
+)
+# apply diarization pipeline
+diar_results = diar_pipeline('EN2002a_30s.wav', sess_name='EN2002a')
+```
+
 
 ## Results (SDM)
 We aim to make the whole pipeline as simple as possible. Therefore, for the results below: 
@@ -64,8 +81,8 @@ Proposed         Fbank        12.9     6.9       12.6
               WavLM-updated    9.8     5.9       10.2
 --------------------------------------------------------------
 Note:
-The results above are different from our ICASSP submission. 
-We made a few updates to experimental numbers but the conclusions in our paper are as same as the original ones.
+The results from HF differ slightly from previous ones due to new model training.
+The old results are retained for the moment to ensure consistency.
 ```
 
 ## Citation
