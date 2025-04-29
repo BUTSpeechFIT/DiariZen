@@ -24,7 +24,8 @@ git submodule update
 We use **SDM (first channel from the first far-field microphone array)** data from public [AMI](https://github.com/pyannote/AMI-diarization-setup/tree/main/pyannote), [AISHELL-4](https://www.openslr.org/111/), and [AliMeeting](https://openslr.org/119/) for model training and evaluation. Please download these datasets firstly. Our data partition is [here](https://github.com/BUTSpeechFIT/DiariZen/tree/main/recipes/diar_ssl/data/AMI_AliMeeting_AISHELL4).
 
 ## Usage
-For model training, see `recipes/diar_ssl/run_stage.sh`. For inference, our model supports for [Hugging Face](https://huggingface.co/BUT-FIT/diarizen-meeting-base) 🤗. See below: 
+- For model training, see `recipes/diar_ssl/run_stage.sh`. 
+- For inference, our model supports for [Hugging Face](https://huggingface.co/BUT-FIT/diarizen-meeting-base) 🤗. See below: 
 ```python
 from diarizen.pipelines.inference import DiariZenPipeline
 
