@@ -48,7 +48,7 @@ diar_pipeline = DiariZenPipeline.from_pretrained(
         rttm_out_dir='.'
 )
 # apply diarization pipeline
-diar_results = diar_pipeline('EN2002a_30s.wav', sess_name='EN2002a')
+diar_results = diar_pipeline('./example/EN2002a_30s.wav', sess_name='EN2002a')
 ```
 
 
