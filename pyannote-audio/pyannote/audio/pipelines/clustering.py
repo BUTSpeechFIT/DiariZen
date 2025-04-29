@@ -40,6 +40,38 @@ from pyannote.audio.core.io import AudioFile
 from pyannote.audio.pipelines.utils import oracle_segmentation
 from pyannote.audio.utils.permutation import permutate
 
+# VBx 
+from diarizen.clustering.VBx import vbx_setup, cluster_vbx
+
+
+def filter_embeddings_by_frames(
+    binary_segmentations: np.ndarray, 
+    min_frames: int = 0
+) -> np.ndarray:
+    """
+    Parameters
+    ----------
+    binary_segmentations : np.ndarray of shape (chunks, frames, spks)
+        1 means speaker is active, 0 means silence.
+    min_frames : int
+        Minimum number of clean frames required per speaker.
+
+    Returns
+    -------
+    clean_segments : np.ndarray of shape (chunks, spks)
+        Boolean mask where True indicates the speaker has enough clean frames in the chunk.
+    """
+    # Mask of frames where only one speaker is active
+    single_active_mask = (np.sum(binary_segmentations, axis=2, keepdims=True) == 1)
+    # Keep only frames where the speaker is the only one active
+    clean_frames = binary_segmentations * single_active_mask  # shape: (chunks, frames, spks)
+    # Count number of clean frames per chunk and speaker
+    clean_frame_counts = np.sum(clean_frames, axis=1)  # shape: (chunks, spks)
+    # Check if the count exceeds min_frames
+    clean_segments = clean_frame_counts >= min_frames  # shape: (chunks, spks)
+
+    return clean_segments
+
 
 class BaseClustering(Pipeline):
     def __init__(
@@ -80,6 +112,7 @@ class BaseClustering(Pipeline):
         self,
         embeddings: np.ndarray,
         segmentations: Optional[SlidingWindowFeature] = None,
+        min_frames_ratio: int = 0.0
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Filter NaN embeddings and downsample embeddings
 
@@ -102,8 +135,12 @@ class BaseClustering(Pipeline):
         # whether speaker embedding extraction went fine
         valid = ~np.any(np.isnan(embeddings), axis=2)
 
+        # whether speaker embedding extraction satisfies the minimum frames
+        min_frames = round(min_frames_ratio * segmentations.data.shape[1])
+        frame_mask = filter_embeddings_by_frames(segmentations.data, min_frames)
+
         # indices of embeddings that are both active and valid
-        chunk_idx, speaker_idx = np.where(active * valid)
+        chunk_idx, speaker_idx = np.where(active * valid * frame_mask)
 
         # sample max_num_embeddings embeddings
         num_embeddings = len(chunk_idx)
@@ -114,12 +151,14 @@ class BaseClustering(Pipeline):
             chunk_idx = chunk_idx[indices]
             speaker_idx = speaker_idx[indices]
 
-        return embeddings[chunk_idx, speaker_idx], chunk_idx, speaker_idx
+        return embeddings[chunk_idx, speaker_idx], chunk_idx, speaker_idx  
 
-    def constrained_argmax(self, soft_clusters: np.ndarray) -> np.ndarray:
+    def constrained_argmax(self, soft_clusters: np.ndarray, const_location: np.ndarray = None) -> np.ndarray:
         soft_clusters = np.nan_to_num(soft_clusters, nan=np.nanmin(soft_clusters))
         num_chunks, num_speakers, num_clusters = soft_clusters.shape
         # num_chunks, num_speakers, num_clusters
+        if const_location is not None:
+            soft_clusters[const_location] = -10000      # TODO: try less ad-hoc options
 
         hard_clusters = -2 * np.ones((num_chunks, num_speakers), dtype=np.int8)
 
@@ -302,7 +341,7 @@ class AgglomerativeClustering(BaseClustering):
         self,
         metric: str = "cosine",
         max_num_embeddings: int = np.inf,
-        constrained_assignment: bool = True,   # default: false
+        constrained_assignment: bool = True,
     ):
         super().__init__(
             metric=metric,
@@ -556,6 +595,101 @@ class OracleClustering(BaseClustering):
         return hard_clusters, soft_clusters, centroids
 
 
+class VBxClustering(BaseClustering):
+    def __init__(
+        self,
+        metric: str = "cosine",
+        max_num_embeddings: int = np.inf,
+        constrained_assignment: bool = True,
+        plda_dir: str = "",
+        lda_dim: int = 128,
+        maxIters: int = 20
+    ):
+        super().__init__(
+            metric=metric,
+            max_num_embeddings=max_num_embeddings,
+            constrained_assignment=constrained_assignment,
+        )
+
+        self.ahc_criterion = Categorical(["maxclust", "distance"])
+        if self.ahc_criterion == "maxclust":
+            self.ahc_threshold = Integer(0, 30)    # set the max to 30
+        else:
+            self.ahc_threshold = Uniform(0.5, 0.8)  # assume unit-normalized embeddings
+
+        # VBx
+        self.plda_dir = plda_dir
+        self.lda_dim = lda_dim
+        self.maxIters = maxIters
+
+        # tuned VBx hyper params
+        self.Fa = Uniform(0.01, 0.5)
+        self.Fb = Uniform(0.01, 15.0)
+
+    def __call__(
+        self,
+        embeddings: np.ndarray,
+        segmentations: Optional[SlidingWindowFeature] = None,
+        num_clusters: Optional[int] = None,     # not used but kept for compatibility
+        min_clusters: Optional[int] = None,     # not used but kept for compatibility
+        max_clusters: Optional[int] = None,     # not used but kept for compatibility
+    ) -> np.ndarray:
+        train_embeddings, _, _ = self.filter_embeddings(
+            embeddings,
+            segmentations=segmentations,
+            min_frames_ratio=0.1
+        )
+        
+        # AHC
+        train_embeddings_normed = train_embeddings / np.linalg.norm(train_embeddings, axis=1, keepdims=True)
+        dendrogram = linkage(
+            train_embeddings_normed, method="centroid", metric="euclidean"
+        )
+        ahc_clusters = fcluster(dendrogram, self.ahc_threshold, criterion=self.ahc_criterion) - 1
+        _, ahc_clusters = np.unique(ahc_clusters, return_inverse=True)
+     
+        # VBx
+        x_tf, plda_tf, plda_psi = vbx_setup(self.plda_dir) 
+        fea = plda_tf(x_tf(train_embeddings), lda_dim=self.lda_dim)
+        Phi = plda_psi[:self.lda_dim]
+        q, sp = cluster_vbx(
+            ahc_clusters, fea, Phi,
+            Fa=self.Fa, Fb=self.Fb, maxIters=self.maxIters 
+        )
+
+        # calculate distance
+        num_chunks, num_speakers, dimension = embeddings.shape
+        centroids = (q[:, sp > 1e-7].T @ train_embeddings.reshape(-1, dimension))  # not division needed, cos-sim follows
+
+        e2k_distance = rearrange(
+            cdist(
+                rearrange(embeddings, "c s d -> (c s) d"),
+                centroids,
+                metric=self.metric,
+            ),
+            "(c s) k -> c s k",
+            c=num_chunks,
+            s=num_speakers,
+        )
+        soft_clusters = 2 - e2k_distance 
+
+        # assign each embedding to the cluster with the most similar centroid
+        if self.constrained_assignment:
+            hard_clusters = self.constrained_argmax(
+                soft_clusters, 
+                const_location=None
+            )
+        else:
+            hard_clusters = np.argmax(soft_clusters, axis=2)
+
+        # re-number clusters from 0 to num_large_clusters
+        _, hard_clusters = np.unique(hard_clusters, return_inverse=True)
+        hard_clusters = hard_clusters.reshape(num_chunks, num_speakers)
+
+        return hard_clusters, soft_clusters, centroids
+
+        
 class Clustering(Enum):
     AgglomerativeClustering = AgglomerativeClustering
     OracleClustering = OracleClustering
+    VBxClustering = VBxClustering
