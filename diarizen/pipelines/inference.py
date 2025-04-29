@@ -1,203 +1,158 @@
 # Licensed under the MIT license.
-# Adopted from https://github.com/espnet/espnet/blob/master/egs2/chime8_task1/diar_asr1/local/pyannote_diarize.py
 # Copyright 2020 CNRS (author: Herve Bredin, herve.bredin@irit.fr)
 # Copyright 2025 Brno University of Technology (author: Jiangyu Han, ihan@fit.vut.cz)
 
-import toml 
-import numpy as np
-
 import argparse
-import os.path
+import os
 from pathlib import Path
 
+import toml
+import numpy as np
 import torch
 import torchaudio
 
-from huggingface_hub import hf_hub_download
+from scipy.ndimage import median_filter
 
-from pyannote.metrics.segmentation import Annotation, Segment
+from huggingface_hub import snapshot_download, hf_hub_download
 from pyannote.audio.pipelines import SpeakerDiarization as SpeakerDiarizationPipeline
 from pyannote.audio.utils.signal import Binarize
+from pyannote.database.protocol.protocol import ProtocolFile
+
+from diarizen.pipelines.utils import scp2path, merge_closer
 
 
-def scp2path(scp_file):
-    """ return path list """
-    lines = [line.strip().split()[1] for line in open(scp_file)]
-    return lines
-
-def split_maxlen(utt_group, min_len=10):
-    # merge if
-    out = []
-    stack = []
-    for utt in utt_group:
-        if not stack or (utt.end - stack[0].start) < min_len:
-            stack.append(utt)
-            continue
-
-        out.append(Segment(stack[0].start, stack[-1].end))
-        stack = [utt]
-
-    if len(stack):
-        out.append(Segment(stack[0].start, stack[-1].end))
-
-    return out
-
-def merge_closer(annotation, delta=1.0, max_len=60, min_len=10):
-    name = annotation.uri
-    speakers = annotation.labels()
-    new_annotation = Annotation(uri=name)
-    for spk in speakers:
-        c_segments = sorted(annotation.label_timeline(spk), key=lambda x: x.start)
-        stack = []
-        for seg in c_segments:
-            if not stack or abs(stack[-1].end - seg.start) < delta:
-                stack.append(seg)
-                continue  # continue
-
-            # more than delta, save the current max seg
-            if (stack[-1].end - stack[0].start) > max_len:
-                # break into parts of 10 seconds at least
-                for sub_seg in split_maxlen(stack, min_len):
-                    new_annotation[sub_seg] = spk
-                stack = [seg]
-            else:
-                new_annotation[Segment(stack[0].start, stack[-1].end)] = spk
-                stack = [seg]
-
-        if len(stack):
-            new_annotation[Segment(stack[0].start, stack[-1].end)] = spk
-
-    return new_annotation
-
-
-class DiariZenPipeline:
+class DiariZenPipeline(SpeakerDiarizationPipeline):
     def __init__(
         self, 
-        cfg_path, 
-        pretrained_model,
+        diarizen_hub,
         embedding_model,
         rttm_out_dir: str = None,
-        segmentation_step: float = 0.1,
-        batch_size: int = 32,
-        min_cluster_size: int = 30,
-        cluster_threshold: float = 0.7,
-        min_n_speakers: int = 2,
-        max_n_speakers: int = 8,
-        merge_delta: float = 0.5,
-        merge_max_length: int = 50
     ):
-        config_path = Path(cfg_path).expanduser().absolute()
+        config_path = Path(diarizen_hub / "config.toml")
         config = toml.load(config_path.as_posix())
-        
+        print(f'config: {config}')
+
+        inference_config = config["inference"]["args"]
+        clustering_config = config["clustering"]["args"]
+
+        super().__init__(
+            config=config,
+            seg_duration=inference_config["seg_duration"],
+            segmentation=str(Path(diarizen_hub / "pytorch_model.bin")),
+            segmentation_step=inference_config["segmentation_step"],
+            embedding=embedding_model,
+            embedding_exclude_overlap=True,
+            clustering=clustering_config["method"],     
+            embedding_batch_size=inference_config["batch_size"],
+            segmentation_batch_size=inference_config["batch_size"],
+            device=torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
+        )
+
+        self.apply_median_filtering = inference_config["apply_median_filtering"]
+        self.merge_delta = clustering_config["merge_delta"]
+        self.merge_max_length = clustering_config["merge_max_length"]
+        self.min_speakers = clustering_config["min_speakers"]
+        self.max_speakers = clustering_config["max_speakers"]
+
+        if clustering_config["method"] == "AgglomerativeClustering":
+            self.PIPELINE_PARAMS = {
+                "clustering": {
+                    "method": "centroid",
+                    "min_cluster_size": clustering_config["min_cluster_size"],
+                    "threshold": clustering_config["ahc_threshold"],
+                }
+            }
+        elif clustering_config["method"] == "VBxClustering":
+            self.PIPELINE_PARAMS = {
+                "clustering": {
+                    "ahc_criterion": clustering_config["ahc_criterion"],
+                    "ahc_threshold": clustering_config["ahc_threshold"],
+                    "Fa": clustering_config["Fa"],
+                    "Fb": clustering_config["Fb"],
+                }
+            }
+            self.clustering.plda_dir = str(Path(diarizen_hub / "plda"))
+            self.clustering.lda_dim = clustering_config["lda_dim"]
+            self.clustering.maxIters = clustering_config["max_iters"]
+        else:
+            raise ValueError(f"Unsupported clustering method: {clustering_config['method']}")
+
+        self.instantiate(self.PIPELINE_PARAMS)
+
         if rttm_out_dir is not None:
             os.makedirs(rttm_out_dir, exist_ok=True)
         self.rttm_out_dir = rttm_out_dir
 
-        self.min_n_speakers = min_n_speakers
-        self.max_n_speakers = max_n_speakers
-        
-        self.merge_delta = merge_delta
-        self.merge_max_length = merge_max_length
-
-        self.PIPELINE_PARAMS = {
-            "clustering": {
-                "method": "centroid",
-                "min_cluster_size": min_cluster_size,
-                "threshold": cluster_threshold   
-            },
-            "segmentation": {
-                "min_duration_off": 0.0    
-            },
-        }
-        # create, instantiate and apply the pipeline
-        self.pipeline = SpeakerDiarizationPipeline(
-            config=config,      # model configurations 
-            segmentation=pretrained_model,
-            segmentation_step=segmentation_step,
-            embedding=embedding_model,
-            embedding_exclude_overlap=True,
-            clustering="AgglomerativeClustering",
-            embedding_batch_size=batch_size,
-            segmentation_batch_size=batch_size,
-            device=torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-        )
-        self.pipeline.instantiate(self.PIPELINE_PARAMS)
-        assert self.pipeline._segmentation.model.specifications.powerset is True
+        assert self._segmentation.model.specifications.powerset is True
 
     @classmethod
     def from_pretrained(
         cls, 
         repo_id: str, 
         cache_dir: str = None,
-        rttm_out_dir: str = None
+        rttm_out_dir: str = None,
     ) -> "DiariZenPipeline":
-        config = hf_hub_download(
+        diarizen_hub = snapshot_download(
             repo_id=repo_id,
-            filename="config.toml",
             cache_dir=cache_dir,
             local_files_only=cache_dir is not None
         )
-        pretrained_model = hf_hub_download(
-            repo_id=repo_id,
-            filename="pytorch_model.bin",
-            cache_dir=cache_dir,
-            local_files_only=cache_dir is not None
-        )
+
         embedding_model = hf_hub_download(
             repo_id="pyannote/wespeaker-voxceleb-resnet34-LM",
             filename="pytorch_model.bin",
             cache_dir=cache_dir,
             local_files_only=cache_dir is not None
         )
+
         return cls(
-            cfg_path=config,
-            pretrained_model=pretrained_model,
+            diarizen_hub=Path(diarizen_hub).expanduser().absolute(),
             embedding_model=embedding_model,
             rttm_out_dir=rttm_out_dir
         )
 
     def __call__(self, in_wav, sess_name=None):
+        assert isinstance(in_wav, (str, ProtocolFile)), "input must be either a str or a ProtocolFile"
+        in_wav = in_wav if not isinstance(in_wav, ProtocolFile) else in_wav['audio']
+        
         print('Extracting segmentations.')
-        waveform, sample_rate = torchaudio.load(in_wav)
+        waveform, sample_rate = torchaudio.load(in_wav) 
         waveform = torch.unsqueeze(waveform[0], 0)      # force to use the SDM data
-        segmentations = self.pipeline.get_segmentations({"waveform": waveform, "sample_rate": sample_rate}, soft=False)
+        segmentations = self.get_segmentations({"waveform": waveform, "sample_rate": sample_rate}, soft=False)
+
+        if self.apply_median_filtering:
+            segmentations.data = median_filter(segmentations.data, size=(1, 11, 1), mode='reflect')
 
         # binarize segmentation
         binarized_segmentations = segmentations     # powerset
 
         # estimate frame-level number of instantaneous speakers
-        count = self.pipeline.speaker_count(
+        count = self.speaker_count(
             binarized_segmentations,
-            self.pipeline._segmentation.model._receptive_field,
+            self._segmentation.model._receptive_field,
             warm_up=(0.0, 0.0),
         )
 
         print("Extracting Embeddings.")
-        embeddings = self.pipeline.get_embeddings(
+        embeddings = self.get_embeddings(
             {"waveform": waveform, "sample_rate": sample_rate},
             binarized_segmentations,
-            exclude_overlap=self.pipeline.embedding_exclude_overlap,
+            exclude_overlap=self.embedding_exclude_overlap,
         )
 
         # shape: (num_chunks, local_num_speakers, dimension)
         print("Clustering.")
-        hard_clusters, _, _ = self.pipeline.clustering(
+        hard_clusters, _, _ = self.clustering(
             embeddings=embeddings,
             segmentations=binarized_segmentations,
-            num_clusters=None,
-            min_clusters=self.min_n_speakers,  # 4 for NSF
-            max_clusters=self.max_n_speakers,  # max-speakers are ok
-            file={
-                "waveform": waveform, 
-                "sample_rate": sample_rate
-            },  # <== for oracle clustering
-            frames=self.pipeline._segmentation.model._receptive_field,  # <== for oracle clustering
+            min_clusters=self.min_speakers,  
+            max_clusters=self.max_speakers
         )
 
         # during counting, we could possibly overcount the number of instantaneous
         # speakers due to segmentation errors, so we cap the maximum instantaneous number
         # of speakers by the `max_speakers` value
-        count.data = np.minimum(count.data, self.max_n_speakers).astype(np.int8)
+        count.data = np.minimum(count.data, self.max_speakers).astype(np.int8)
 
         # keep track of inactive speakers
         inactive_speakers = np.sum(binarized_segmentations.data, axis=1) == 0
@@ -205,7 +160,7 @@ class DiariZenPipeline:
 
         # reconstruct discrete diarization from raw hard clusters
         hard_clusters[inactive_speakers] = -2
-        discrete_diarization, _ = self.pipeline.reconstruct(
+        discrete_diarization, _ = self.reconstruct(
             segmentations,
             hard_clusters,
             count,
@@ -216,7 +171,7 @@ class DiariZenPipeline:
             onset=0.5,
             offset=0.5,
             min_duration_on=0.0,
-            min_duration_off=self.pipeline.segmentation.min_duration_off
+            min_duration_off=0.0
         )
         result = to_annotation(discrete_diarization)
         result.uri = sess_name
