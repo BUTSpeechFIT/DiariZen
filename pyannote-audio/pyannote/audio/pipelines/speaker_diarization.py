@@ -115,6 +115,7 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
     def __init__(
         self,
         config: Union[Dict, Any] = None,
+        seg_duration: float = None,
         segmentation: PipelineModel = "pyannote/segmentation@2022.07",
         segmentation_step: float = 0.1,
         embedding: PipelineModel = "speechbrain/spkrec-ecapa-voxceleb@5c0be3875fda05e81f3c004ed8c7c06be308de1e",
@@ -143,7 +144,7 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
 
         self.device = device
 
-        segmentation_duration = model.specifications.duration
+        segmentation_duration = seg_duration if seg_duration is not None else model.specifications.duration
         self._segmentation = Inference(
             model,
             duration=segmentation_duration,
