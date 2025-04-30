@@ -49,8 +49,6 @@ class DiariZenPipeline(SpeakerDiarizationPipeline):
         )
 
         self.apply_median_filtering = inference_config["apply_median_filtering"]
-        self.merge_delta = clustering_config["merge_delta"]
-        self.merge_max_length = clustering_config["merge_max_length"]
         self.min_speakers = clustering_config["min_speakers"]
         self.max_speakers = clustering_config["max_speakers"]
 
