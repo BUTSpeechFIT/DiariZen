@@ -18,7 +18,7 @@ from pyannote.audio.pipelines import SpeakerDiarization as SpeakerDiarizationPip
 from pyannote.audio.utils.signal import Binarize
 from pyannote.database.protocol.protocol import ProtocolFile
 
-from diarizen.pipelines.utils import scp2path, merge_closer
+from diarizen.pipelines.utils import scp2path
 
 
 class DiariZenPipeline(SpeakerDiarizationPipeline):
@@ -175,9 +175,6 @@ class DiariZenPipeline(SpeakerDiarizationPipeline):
         )
         result = to_annotation(discrete_diarization)
         result.uri = sess_name
-        result = merge_closer(
-            result, delta=self.merge_delta, max_len=self.merge_max_length, min_len=10
-        )
         
         if self.rttm_out_dir is not None:
             assert sess_name is not None
