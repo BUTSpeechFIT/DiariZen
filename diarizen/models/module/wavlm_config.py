@@ -9,8 +9,8 @@ Predefined WavLM model configurations for speaker diarization tasks.
 Includes:
 - wavlm_base
 - wavlm_large
-- wavlm_base_mtd_s80
-- wavlm_large_mtd_s80
+- wavlm_base_s80_md
+- wavlm_large_s80_md
 
 Usage:
     from diarizen.models.module.wavlm_config import get_config
@@ -24,8 +24,8 @@ def get_config(name: str) -> dict:
     configs = {
         "wavlm_base": WAVLM_BASE,
         "wavlm_large": WAVLM_LARGE,
-        "wavlm_base_md_s80": WAVLM_BASE_MD_S80,     # multi-domain
-        "wavlm_large_md_s80": WAVLM_LARGE_MD_S80,   # multi-domain
+        "wavlm_base_s80_md": WAVLM_BASE_S80_MD,     # multi-domain
+        "wavlm_large_s80_md": WAVLM_LARGE_S80_MD,   # multi-domain
     }
     if name not in configs:
         raise ValueError(
@@ -111,7 +111,7 @@ WAVLM_LARGE = {
     "encoder_prune_feed_forward_layer": False,
 }
 
-WAVLM_BASE_MD_S80 = {
+WAVLM_BASE_S80_MD = {
     "extractor_mode": "group_norm",
     "extractor_conv_layer_config": [
         (90, 10, 5),
@@ -167,7 +167,7 @@ WAVLM_BASE_MD_S80 = {
     "use_layerwise_prune": False,
 }
 
-WAVLM_LARGE_MD_S80 = {
+WAVLM_LARGE_S80_MD = {
     "extractor_mode": "layer_norm",
     "extractor_conv_layer_config": [
         (512, 10, 5),
