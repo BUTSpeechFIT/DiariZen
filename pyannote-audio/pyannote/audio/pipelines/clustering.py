@@ -138,9 +138,12 @@ class BaseClustering(Pipeline):
         # whether speaker embedding extraction satisfies the minimum frames
         min_frames = round(min_frames_ratio * segmentations.data.shape[1])
         frame_mask = filter_embeddings_by_frames(segmentations.data, min_frames)
-
-        # indices of embeddings that are both active and valid
         chunk_idx, speaker_idx = np.where(active * valid * frame_mask)
+
+        if len(chunk_idx) < 2:    
+            # warning: no effective frames; input might be too short or fully overlapped
+            frame_mask = filter_embeddings_by_frames(segmentations.data, 0)
+            chunk_idx, speaker_idx = np.where(active * valid * frame_mask)
 
         # sample max_num_embeddings embeddings
         num_embeddings = len(chunk_idx)
@@ -640,6 +643,14 @@ class VBxClustering(BaseClustering):
             min_frames_ratio=0.1
         )
         
+        if train_embeddings.shape[0] < 2:
+            # do NOT apply clustering when the number of training embeddings is less than 2
+            num_chunks, num_speakers, _ = embeddings.shape
+            hard_clusters = np.zeros((num_chunks, num_speakers), dtype=np.int8)
+            soft_clusters = np.ones((num_chunks, num_speakers, 1))
+            centroids = np.mean(train_embeddings, axis=0, keepdims=True)
+            return hard_clusters, soft_clusters, centroids
+            
         # AHC
         train_embeddings_normed = train_embeddings / np.linalg.norm(train_embeddings, axis=1, keepdims=True)
         dendrogram = linkage(
