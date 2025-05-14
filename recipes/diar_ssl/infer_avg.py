@@ -2,105 +2,47 @@
 # Adopted from https://github.com/espnet/espnet/blob/master/egs2/chime8_task1/diar_asr1/local/pyannote_diarize.py
 # Copyright 2024 Brno University of Technology (author: Jiangyu Han, ihan@fit.vut.cz)
 
-import toml 
-
+import os
 import argparse
-import os.path
+import toml
 from pathlib import Path
+from typing import Dict
 
+import torch
 import numpy as np
 import torchaudio
 
-from pyannote.metrics.segmentation import Annotation, Segment
+from scipy.ndimage import median_filter
 
+from pyannote.metrics.segmentation import Annotation, Segment
 from pyannote.audio.pipelines import SpeakerDiarization as SpeakerDiarizationPipeline
 from pyannote.audio.utils.signal import Binarize
 
-import torch
+from diarizen.ckpt_utils import load_metric_summary
 
-def scp2path(scp_file):
-    """ return path list """
-    lines = [line.strip().split()[1] for line in open(scp_file)]
-    return lines
 
-def split_maxlen(utt_group, min_len=10):
-    # merge if
-    out = []
-    stack = []
-    for utt in utt_group:
-        if not stack or (utt.end - stack[0].start) < min_len:
-            stack.append(utt)
-            continue
-
-        out.append(Segment(stack[0].start, stack[-1].end))
-        stack = [utt]
-
-    if len(stack):
-        out.append(Segment(stack[0].start, stack[-1].end))
-
-    return out
-
-def merge_closer(annotation, delta=1.0, max_len=60, min_len=10):
-    name = annotation.uri
-    speakers = annotation.labels()
-    new_annotation = Annotation(uri=name)
-    for spk in speakers:
-        c_segments = sorted(annotation.label_timeline(spk), key=lambda x: x.start)
-        stack = []
-        for seg in c_segments:
-            if not stack or abs(stack[-1].end - seg.start) < delta:
-                stack.append(seg)
-                continue  # continue
-
-            # more than delta, save the current max seg
-            if (stack[-1].end - stack[0].start) > max_len:
-                # break into parts of 10 seconds at least
-                for sub_seg in split_maxlen(stack, min_len):
-                    new_annotation[sub_seg] = spk
-                stack = [seg]
-            else:
-                new_annotation[Segment(stack[0].start, stack[-1].end)] = spk
-                stack = [seg]
-
-        if len(stack):
-            new_annotation[Segment(stack[0].start, stack[-1].end)] = spk
-
-    return new_annotation
-
-def load_metric_summary(metric_file, ckpt_path):
-    with open(metric_file, "r") as f:
-        lines = f.readlines()
-    out_lst = []
-    for line in lines:
-        assert "Validation Loss/DER" in line
-        epoch = line.split()[4].split(':')[0]
-        Loss, DER = line.split()[-3], line.split()[-1]
-        bin_path = f"epoch_{str(epoch).zfill(4)}/pytorch_model.bin"
-        out_lst.append({
-            'epoch': int(epoch),
-            'bin_path': ckpt_path / bin_path,
-            'Loss': float(Loss),
-            'DER': float(DER)
-        })
-    return out_lst
-
+def load_scp(scp_file: str) -> Dict[str, str]:
+    """ return dictionary { rec: wav_rxfilename } """
+    lines = [line.strip().split(None, 1) for line in open(scp_file)]
+    return {x[0]: x[1] for x in lines}
 
 def diarize_session(
     sess_name,
+    in_wav,
     pipeline,
-    wav_files,
-    uem_boundaries=None,
-    merge_closer_delta=1.5,
-    max_length_merged=60,
-    max_n_speakers=8,
+    min_speakers=1,
+    max_speakers=20,
+    apply_median_filtering=True
 ):
     print('Extracting segmentations...')
-    waveform, sample_rate = torchaudio.load(wav_files[0])
+    waveform, sample_rate = torchaudio.load(in_wav) 
     waveform = torch.unsqueeze(waveform[0], 0)      # force to use the SDM data
     segmentations = pipeline.get_segmentations({"waveform": waveform, "sample_rate": sample_rate}, soft=False)
 
+    if apply_median_filtering:
+        segmentations.data = median_filter(segmentations.data, size=(1, 11, 1), mode='reflect')
+
     # binarize segmentation
-    assert pipeline._segmentation.model.specifications.powerset is True
     binarized_segmentations = segmentations     # powerset
 
     # estimate frame-level number of instantaneous speakers
@@ -122,20 +64,14 @@ def diarize_session(
     hard_clusters, _, _ = pipeline.clustering(
         embeddings=embeddings,
         segmentations=binarized_segmentations,
-        num_clusters=None,
-        min_clusters=2,  # 4 for NSF
-        max_clusters=max_n_speakers,  # max-speakers are ok
-        file={
-            "waveform": waveform, 
-            "sample_rate": sample_rate
-        },  # <== for oracle clustering
-        frames=pipeline._segmentation.model._receptive_field,  # <== for oracle clustering
+        min_clusters=min_speakers, 
+        max_clusters=max_speakers,  
     )
 
     # during counting, we could possibly overcount the number of instantaneous
     # speakers due to segmentation errors, so we cap the maximum instantaneous number
     # of speakers by the `max_speakers` value
-    count.data = np.minimum(count.data, max_n_speakers).astype(np.int8)
+    count.data = np.minimum(count.data, max_speakers).astype(np.int8)
 
     # keep track of inactive speakers
     inactive_speakers = np.sum(binarized_segmentations.data, axis=1) == 0
@@ -154,184 +90,178 @@ def diarize_session(
         onset=0.5,
         offset=0.5,
         min_duration_on=0.0,
-        min_duration_off=pipeline.segmentation.min_duration_off
+        min_duration_off=0.0
     )
     result = to_annotation(discrete_diarization)
-    offset = uem_boundaries[0] / sample_rate
-    new_annotation = Annotation(uri=sess_name)  # new annotation
-    speakers = result.labels()
-    for spk in speakers:
-        for seg in result.label_timeline(spk):
-            new_annotation[Segment(seg.start + offset, seg.end + offset)] = spk
+    result.uri = sess_name
 
-    new_annotation = merge_closer(
-        new_annotation, delta=merge_closer_delta, max_len=max_length_merged, min_len=10
-    )
-    return new_annotation
-
-
-def read_uem(uem_file):
-    with open(uem_file, "r") as f:
-        lines = f.readlines()
-    lines = [x.rstrip("\n") for x in lines]
-    uem2sess = {}
-    for x in lines:
-        sess_id, _, start, stop = x.split(" ")
-        uem2sess[sess_id] = (float(start), float(stop))
-    return uem2sess
+    return result
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        "This script performs diarization using Pyannote audio diarization pipeline ",
+        "This script performs diarization using DiariZen pipeline ",
         add_help=True,
         usage="%(prog)s [options]",
     )
+
+    # Required arguments
     parser.add_argument(
         "-C",
         "--configuration",
-        required=True,
         type=str,
+        required=True,
         help="Configuration (*.toml).",
     )
     parser.add_argument(
-        "-i,--in_wav_scp",
+        "-i", 
+        "--in_wav_scp",
         type=str,
+        required=True,
         help="test wav.scp.",
-        metavar="STR",
         dest="in_wav_scp",
     )
     parser.add_argument(
-        "-o,--out_folder",
+        "-o", 
+        "--out_dir",
         type=str,
-        default="",
-        required=False,
-        help="Path to output folder.",
-        metavar="STR",
-        dest="out_dir",
+        required=True,
+        help="Path to output directory.",
     )
     parser.add_argument(
-        "-u,--uem",
+        "--embedding_model",
         type=str,
-        default="",
-        required=False,
-        help="Path to uem file.",
-        metavar="STR",
-        dest="uem_file",
+        required=True,
+        help="Path to pretrained embedding model.",
+    )
+
+    # Optional arguments
+    parser.add_argument(
+        "--diarizen_hub",
+        type=str,
+        help="Path to DiariZen model hub directory."
     )
     parser.add_argument(
         "--avg_ckpt_num",
         type=int,
         default=5,
-        required=False,
         help="the number of chckpoints of model averaging",
-        metavar="STR",
-        dest="avg_ckpt_num",
     )
     parser.add_argument(
         "--val_metric",
         type=str,
-        default="DER",
-        required=False,
+        default="Loss",
         help="validation metric",
         choices=["Loss", "DER"],
-        metavar="STR",
-        dest="val_metric",
     )
     parser.add_argument(
         "--val_mode",
         type=str,
         default="best",
-        required=False,
         help="validation metric mode",
         choices=["best", "prev", "center"],
-        metavar="STR",
-        dest="val_mode",
     )
     parser.add_argument(
         "--val_metric_summary",
         type=str,
         default="",
-        required=False,
         help="val_metric_summary",
-        metavar="STR",
-        dest="val_metric_summary",
     )
     parser.add_argument(
         "--segmentation_model",
-        required=False,
         type=str,
-        help="Pre-trained segmentation model used.",
-        metavar="STR",
-        dest="segmentation_model",
+        default="",
+        help="Path to pretrained segmentation model.",
     )
+
+    # Inference parameters
     parser.add_argument(
-        "--embedding_model",
-        required=False,
-        type=str,
-        help="Pre-trained segmentation model used.",
-        metavar="STR",
-        dest="embedding_model",
-    )
-    parser.add_argument(
-        "--max_speakers",
+        "--seg_duration",
         type=int,
-        default=8,
-        help="Max number of speakers in each session.",
-        metavar="INT",
-        dest="max_speakers",
-    )
-    parser.add_argument(
-        "--batch_size",
-        type=int,
-        default=32,
-        help="batch size used for segmentation and embeddings extraction.",
-        metavar="INT",
-        dest="batch_size",
-    )
-    parser.add_argument(
-        "--max_length_merged",
-        type=str,
-        default="60",
-        help="Max length of segments that will be merged together. "
-        "Reduce to reduce GSS GPU memory occupation later in the recipe.",
-        metavar="STR",
-        dest="max_length_merged",
-    )
-    parser.add_argument(
-        "--merge_closer",
-        type=str,
-        default="0.5",
-        help="Merge segments from same speakers that "
-        "are less than this value apart.",
-        metavar="STR",
-        dest="merge_closer",
-    )
-    parser.add_argument(
-        "--cluster_threshold",
-        type=float,
-        default=0.75,
-        help="cluster_threshold",
-        metavar="STR",
-        dest="cluster_threshold",
-    )
-    parser.add_argument(
-        "--min_cluster_size",
-        type=int,
-        default=15,
-        help="min_cluster_size",
-        metavar="STR",
-        dest="min_cluster_size",
+        default=16,
+        help="Segment duration in seconds.",
     )
     parser.add_argument(
         "--segmentation_step",
         type=float,
         default=0.1,
-        help="segmentation_step",
-        metavar="STR",
-        dest="segmentation_step",
+        help="Shifting ratio during segmentation",
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=32,
+        help="Input batch size for inference.",
+    )
+    parser.add_argument(
+        "--apply_median_filtering",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Apply median filtering to segmentation output.",
     )
 
+    # Clustering parameters
+    parser.add_argument(
+        "--clustering_method",
+        type=str,
+        default="VBxClustering",
+        choices=["VBxClustering", "AgglomerativeClustering"],
+        help="Clustering method to use.",
+    )
+    parser.add_argument(
+        "--min_speakers",
+        type=int,
+        default=1,
+        help="Minimum number of speakers.",
+    )
+    parser.add_argument(
+        "--max_speakers",
+        type=int,
+        default=20,
+        help="Maximum number of speakers.",
+    )
+    parser.add_argument(
+        "--ahc_criterion",
+        type=str,
+        default="distance",
+        help="AHC criterion (for VBx).",
+    )
+    parser.add_argument(
+        "--ahc_threshold",
+        type=float,
+        default=0.6,
+        help="AHC threshold.",
+    )
+    parser.add_argument(
+        "--min_cluster_size",
+        type=int,
+        default=13,
+        help="Minimum cluster size (for AHC).",
+    )
+    parser.add_argument(
+        "--Fa",
+        type=float,
+        default=0.07,
+        help="VBx Fa parameter.",
+    )
+    parser.add_argument(
+        "--Fb",
+        type=float,
+        default=0.8,
+        help="VBx Fb parameter.",
+    )
+    parser.add_argument(
+        "--lda_dim",
+        type=int,
+        default=128,
+        help="VBx LDA dimension.",
+    )
+    parser.add_argument(
+        "--max_iters",
+        type=int,
+        default=20,
+        help="VBx maximum iterations.",
+    )
 
     args = parser.parse_args()
     print(args)
@@ -339,84 +269,78 @@ if __name__ == "__main__":
     config_path = Path(args.configuration).expanduser().absolute()
     config = toml.load(config_path.as_posix())
     
-    PIPELINE_PARAMS = {
-        "clustering": {
-            "method": "centroid",
-            "min_cluster_size": args.min_cluster_size,
-            "threshold": args.cluster_threshold   # 0.7153814381597874,
-        },
-        "segmentation": {
-            "min_duration_off": 0.0    # 0.5817029604921046,
-        },
-    }
-
     ckpt_path = config_path.parent / 'checkpoints'
+    segmentation = args.segmentation_model
     if args.val_metric_summary:
         val_metric_lst = load_metric_summary(args.val_metric_summary, ckpt_path)
         val_metric_lst_sorted = sorted(val_metric_lst, key=lambda i: i[args.val_metric])
         best_val_metric_idx = val_metric_lst.index(val_metric_lst_sorted[0])
         if args.val_mode == "best":
-            # print(f'averaging the best {args.avg_ckpt_num} checkpoints...')
             segmentation = val_metric_lst_sorted[:args.avg_ckpt_num]
         elif args.val_mode == "prev":
-            # print(f'averaging previous {args.avg_ckpt_num} checkpoints to the converged moment...')
             segmentation = val_metric_lst[
                 best_val_metric_idx - args.avg_ckpt_num + 1 :
                 best_val_metric_idx + 1
             ]
         else:
-            # print(f'averaging {args.avg_ckpt_num} checkpoints around the converged moment...')
             segmentation = val_metric_lst[
                 best_val_metric_idx - args.avg_ckpt_num // 2 :
                 best_val_metric_idx + args.avg_ckpt_num // 2 + 1
             ]
         assert len(segmentation) == args.avg_ckpt_num
-    else:
-        segmentation = args.segmentation_model
 
     # create, instantiate and apply the pipeline
     diarization_pipeline = SpeakerDiarizationPipeline(
-        config=config,      # model configurations 
+        config=config,      
+        seg_duration=args.seg_duration,
         segmentation=segmentation,
         segmentation_step=args.segmentation_step,
         embedding=args.embedding_model,
         embedding_exclude_overlap=True,
-        clustering="AgglomerativeClustering",
+        clustering=args.clustering_method,
         embedding_batch_size=args.batch_size,
-        segmentation_batch_size=args.batch_size
+        segmentation_batch_size=args.batch_size,
+        device=torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
     )
+
+    if args.clustering_method == "AgglomerativeClustering":
+        PIPELINE_PARAMS = {
+            "clustering": {
+                "method": "centroid",
+                "min_cluster_size": args.min_cluster_size,
+                "threshold": args.ahc_threshold,
+            }
+        }
+    elif args.clustering_method == "VBxClustering":
+        PIPELINE_PARAMS = {
+            "clustering": {
+                "ahc_criterion": args.ahc_criterion,
+                "ahc_threshold": args.ahc_threshold,
+                "Fa": args.Fa,
+                "Fb": args.Fb,
+            }
+        }
+        diarization_pipeline.clustering.plda_dir = os.path.join(args.diarizen_hub, "plda")
+        diarization_pipeline.clustering.lda_dim = args.lda_dim
+        diarization_pipeline.clustering.maxIters = args.max_iters
+    else:
+        raise ValueError(f"Unsupported clustering method: {args.clustering_method}")
+
     diarization_pipeline.instantiate(PIPELINE_PARAMS)
-
+    
     Path(args.out_dir).mkdir(exist_ok=True, parents=True)
+    audio_dict = load_scp(args.in_wav_scp)
 
-    audio_f = scp2path(args.in_wav_scp)
-
-    if args.uem_file:
-        uem_map = read_uem(args.uem_file)
-        # joint diarization of all mics
-        sess2audio = {}
-        for audio_file in audio_f:
-            sess_name = Path(audio_file).stem.split('.')[0]
-            if sess_name not in sess2audio.keys():
-                sess2audio[sess_name] = []
-            sess2audio[sess_name].append(audio_file)
-
-        # now for each session
-        for sess in sess2audio.keys():
-            print("Diarizing Session {}".format(sess))
-            if args.uem_file:
-                c_uem = uem_map[sess]
-            else:
-                c_uem = None
-            c_result = diarize_session(
-                sess,
-                diarization_pipeline,
-                sess2audio[sess],
-                c_uem,
-                float(args.merge_closer),
-                float(args.max_length_merged),
-                args.max_speakers,
-            )
-            c_rttm_out = os.path.join(args.out_dir, sess + ".rttm")
-            with open(c_rttm_out, "w") as f:
-                f.write(c_result.to_rttm())
+    for sess, in_wav in audio_dict.items():
+        print(f"Diarizing Session: {sess}")
+        diar_result = diarize_session(
+            sess_name=sess,
+            in_wav=in_wav,
+            pipeline=diarization_pipeline,
+            min_speakers=args.min_speakers,
+            max_speakers=args.max_speakers,
+            apply_median_filtering=args.apply_median_filtering
+        )
+        rttm_out = os.path.join(args.out_dir, sess + ".rttm")
+        with open(rttm_out, "w") as f:
+            f.write(diar_result.to_rttm())

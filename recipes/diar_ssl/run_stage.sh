@@ -24,19 +24,17 @@ conf_name=`ls $train_conf | awk -F '/' '{print $NF}' | awk -F '.' '{print $1}'`
 # inference setup
 dtype=test
 data_dir=$recipe_root/data/AMI_AliMeeting_AISHELL4
+seg_duration=8
 
-pyan_merge_closer=0.5
-pyan_max_length_merged=50
-pyan_inf_max_batch=32
-
-cluster_threshold=0.70
-segmentation_step=0.1
+# clustering setup
+clustering_method=AgglomerativeClustering
+ahc_threshold=0.70
 min_cluster_size=30
-infer_affix=_constrained_AHC_segmentation_step_${segmentation_step}_min_cluster_size_${min_cluster_size}_AHC_thres_${cluster_threshold}_pyan_max_length_merged${pyan_max_length_merged}
+infer_affix=_constrained_AHC_thres_${ahc_threshold}_mcs_${min_cluster_size}
 
 avg_ckpt_num=5
 val_metric=Loss   # Loss or DER
-val_mode=prev   # [prev, best, center]  
+val_mode=best   # [prev, best, center]  
 
 # scoring setup
 collar=0
@@ -74,18 +72,15 @@ if [ $stage -le 2 ]; then
         conda activate diarizen && python infer_avg.py -C $config_dir \
             -i ${data_dir}/${dtype}/${dset}/wav.scp \
             -o ${diarization_dir}/infer$infer_affix/metric_${val_metric}_${val_mode}/avg_ckpt${avg_ckpt_num}/${dtype}/${dset} \
-            -u ${data_dir}/${dtype}/${dset}/all.uem \
+            --embedding_model $embedding_model \
             --avg_ckpt_num $avg_ckpt_num \
             --val_metric $val_metric \
             --val_mode $val_mode \
             --val_metric_summary $diarization_dir/val_metric_summary.lst \
-            --segmentation_step $segmentation_step \
-            --min_cluster_size $min_cluster_size \
-            --cluster_threshold $cluster_threshold \
-            --embedding_model $embedding_model \
-            --merge_closer $pyan_merge_closer \
-            --max_length_merged $pyan_max_length_merged \
-            --batch_size $pyan_inf_max_batch
+            --seg_duration $seg_duration \
+            --clustering_method $clustering_method \
+            --ahc_threshold $ahc_threshold \
+            --min_cluster_size $min_cluster_size 
 
         echo "stage3: scoring..."
         SYS_DIR=${diarization_dir}/infer$infer_affix/metric_${val_metric}_${val_mode}/avg_ckpt${avg_ckpt_num}
