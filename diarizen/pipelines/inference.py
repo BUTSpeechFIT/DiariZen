@@ -5,6 +5,7 @@
 import argparse
 import os
 from pathlib import Path
+from typing import Optional, Dict, Any
 
 import toml
 import numpy as np
@@ -26,14 +27,21 @@ class DiariZenPipeline(SpeakerDiarizationPipeline):
         self, 
         diarizen_hub,
         embedding_model,
-        rttm_out_dir: str = None,
+        config_parse: Optional[Dict[str, Any]] = None,
+        rttm_out_dir: Optional[str] = None,
     ):
         config_path = Path(diarizen_hub / "config.toml")
         config = toml.load(config_path.as_posix())
-        print(f'config: {config}')
 
+        if config_parse is not None:
+            print('Overriding with parsed config.')
+            config["inference"]["args"] = config_parse["inference"]["args"]
+            config["clustering"]["args"] = config_parse["clustering"]["args"]
+       
         inference_config = config["inference"]["args"]
         clustering_config = config["clustering"]["args"]
+        
+        print(f'Loaded configuration: {config}')
 
         super().__init__(
             config=config,
@@ -188,32 +196,117 @@ if __name__ == '__main__':
         add_help=True,
         usage="%(prog)s [options]",
     )
-    parser.add_argument(
-        "--cfg_path",
-        required=True,
-        type=str,
-        help="Configuration (*.toml).",
-    )
+
+    # Required paths
     parser.add_argument(
         "--in_wav_scp",
         type=str,
-        default="",
-        help="test wav.scp.",
-        metavar="STR",
-        dest="in_wav_scp",
+        required=True,
+        help="Path to wav.scp."
     )
     parser.add_argument(
-        "--pretrained_model",
+        "--diarizen_hub",
         type=str,
-        help="pretrained_model.",
-        dest="pretrained_model",
+        required=True,
+        help="Path to DiariZen model hub directory."
     )
     parser.add_argument(
         "--embedding_model",
         type=str,
-        help="embedding_model.",
-        dest="embedding_model",
+        required=True,
+        help="Path to pretrained embedding model."
     )
+
+    # inference parameters
+    parser.add_argument(
+        "--seg_duration",
+        type=int,
+        default=16,
+        help="Segment duration in seconds.",
+    )
+    parser.add_argument(
+        "--segmentation_step",
+        type=float,
+        default=0.1,
+        help="Shifting ratio during segmentation",
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=32,
+        help="Input batch size for inference.",
+    )
+    parser.add_argument(
+        "--apply_median_filtering",
+        type=bool,
+        default=True,
+        help="Apply median filtering to segmentation output.",
+    )
+
+    # clustering parameters
+    parser.add_argument(
+        "--clustering_method",
+        type=str,
+        default="VBxClustering",
+        choices=["VBxClustering", "AgglomerativeClustering"],
+        help="Clustering method to use.",
+    )
+    parser.add_argument(
+        "--min_speakers",
+        type=int,
+        default=1,
+        help="Minimum number of speakers.",
+    )
+    parser.add_argument(
+        "--max_speakers",
+        type=int,
+        default=20,
+        help="Maximum number of speakers.",
+    )
+    parser.add_argument(
+        "--ahc_criterion",
+        type=str,
+        default="distance",
+        help="AHC criterion (for VBx).",
+    )
+    parser.add_argument(
+        "--ahc_threshold",
+        type=float,
+        default=0.6,
+        help="AHC threshold.",
+    )
+    parser.add_argument(
+        "--min_cluster_size",
+        type=int,
+        default=13,
+        help="Minimum cluster size (for AHC).",
+    )
+    parser.add_argument(
+        "--Fa",
+        type=float,
+        default=0.07,
+        help="VBx Fa parameter.",
+    )
+    parser.add_argument(
+        "--Fb",
+        type=float,
+        default=0.8,
+        help="VBx Fb parameter.",
+    )
+    parser.add_argument(
+        "--lda_dim",
+        type=int,
+        default=128,
+        help="VBx LDA dimension.",
+    )
+    parser.add_argument(
+        "--max_iters",
+        type=int,
+        default=20,
+        help="VBx maximum iterations.",
+    )
+
+    # Output
     parser.add_argument(
         "--rttm_out_dir",
         type=str,
@@ -226,18 +319,47 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     print(args)
-    # diarizen_pipeline = DiariZenPipeline(
-    #     cfg_path=args.cfg_path,
-    #     pretrained_model=args.pretrained_model,
-    #     embedding_model=args.embedding_model,
-    #     rttm_out_dir=args.rttm_out_dir
-    # )
 
-    # from Huggingface
-    MODEL_NAME = "BUT-FIT/diarizen-meeting-base"
-    cache_dir = "/PATH/hugging-face/hub"
-    diarizen_pipeline = DiariZenPipeline.from_pretrained(
-        MODEL_NAME, cache_dir=cache_dir, rttm_out_dir=args.rttm_out_dir)
+    inference_config = {
+        "seg_duration": args.seg_duration,
+        "segmentation_step": args.segmentation_step,
+        "batch_size": args.batch_size,
+        "apply_median_filtering": args.apply_median_filtering
+    }
+
+    clustering_config = {
+        "method": args.clustering_method,
+        "min_speakers": args.min_speakers,
+        "max_speakers": args.max_speakers
+    }
+    if args.clustering_method == "AgglomerativeClustering":
+        clustering_config.update({
+            "ahc_threshold": args.ahc_threshold,
+            "min_cluster_size": args.min_cluster_size
+        })
+    elif args.clustering_method == "VBxClustering":
+        clustering_config.update({
+            "ahc_criterion": args.ahc_criterion,
+            "ahc_threshold": args.ahc_threshold,
+            "Fa": args.Fa,
+            "Fb": args.Fb,
+            "lda_dim": args.lda_dim,
+            "max_iters": args.max_iters
+        })
+    else:
+        raise ValueError(f"Unsupported clustering method: {args.clustering_method}")
+
+    config_parse = {
+        "inference": {"args": inference_config},
+        "clustering": {"args": clustering_config}
+    }
+
+    diarizen_pipeline = DiariZenPipeline(
+        diarizen_hub=Path(args.diarizen_hub),
+        embedding_model=args.embedding_model,
+        config_parse=config_parse,
+        rttm_out_dir=args.rttm_out_dir
+    )
 
     audio_f = scp2path(args.in_wav_scp)
     for audio_file in audio_f:
