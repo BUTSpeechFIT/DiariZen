@@ -238,7 +238,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "--apply_median_filtering",
-        type=bool,
+        action=argparse.BooleanOptionalAction,
         default=True,
         help="Apply median filtering to segmentation output.",
     )
@@ -313,8 +313,6 @@ if __name__ == '__main__':
         default=None,
         required=False,
         help="Path to output folder.",
-        metavar="STR",
-        dest="rttm_out_dir",
     )
 
     args = parser.parse_args()
