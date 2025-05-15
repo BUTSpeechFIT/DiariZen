@@ -11,8 +11,10 @@ from diarizen.models.module.wav2vec2.utils.import_huggingface_wavlm import impor
 
 
 def convert_wavlm(hf_dir: str, output_dir: str):
-    assert 'base' or 'large' in hf_dir
-    out_name = 'wavlm-large-converted.bin' if 'large' in hf_dir else 'wavlm-base-converted.bin'
+    assert ('base' in hf_dir or 'large' in hf_dir), "hf_dir must contain 'base' or 'large'"
+    model_name=os.path.basename(os.path.normpath(hf_dir))       # e.g. wavlm-base, wavlm-base-plus, wavlm-large
+    out_name = f"{model_name}-converted.bin"
+    
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, out_name)
 
