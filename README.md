@@ -53,6 +53,8 @@ diar_results = diar_pipeline('./example/EN2002a_30s.wav', sess_name='EN2002a')
 
 ## Benchmark 
 We train DiariZen models on a compound dataset composed of the datasets listed in the table below, followed by structured pruning to remove redundant parameters. For the results below: 
+- AISHELL-4 was converted to mono using `sox in.wav -c 1 out.wav`.
+- [NOTSOFAR-1](https://www.chimechallenge.org/challenges/chime8/task2/data) contains **only single-channel** recordings, e.g. `sc_plaza_0`, `sc_rockfall_0`.
 - Diarization Error Rate (DER) is evaluated **without** applying a collar.
 - **No domain adaptation** is applied to any individual dataset.
 - All experiments use the **same clustering hyperparameters** across datasets.
@@ -60,14 +62,13 @@ We train DiariZen models on a compound dataset composed of the datasets listed i
 | Dataset       | [Pyannote v3.1](https://github.com/pyannote/pyannote-audio) | [DiariZen-Base-s80](https://huggingface.co/BUT-FIT/diarizen-wavlm-base-s80-md) |[DiariZen-Large-s80](https://huggingface.co/BUT-FIT/diarizen-wavlm-large-s80-md) |
 |:---------------|:-----------:|:-----------:|:-----------:|
 | AMI-SDM           | 22.4      | 15.8 | 14.0 |
-| AISHELL-4*     | 12.2      | 10.7 | 9.8 |
+| AISHELL-4     | 12.2      | 10.7 | 9.8 |
 | AliMeeting far    | 24.4      | 14.1 | 12.5 | 
 | NOTSOFAR-1    | -      | 20.3 |   17.9 |
 | MSDWild       | 25.3      | 17.4 | 15.6 |
 | DIHARD3 full      | 21.7      | 15.9 | 14.5 |
 | RAMC          | 22.2      | 11.4 | 11.0 |
 | VoxConverse   | 11.3      | 9.7 | 9.2 |
-\* AISHELL-4 was converted to mono using `sox in.wav -c 1 out.wav`
 
 ## Updates
 2025-06-03: Uploaded structured pruning recipes, released new pre-trained models, and updated multiple benchmark results.
