@@ -2,17 +2,15 @@
 This directory contains scripts for structured pruning of [WavLM](https://arxiv.org/pdf/2110.13900) applied to speaker diarization.
 
 ## How to run 
-- Convert WavLM format from HuggingFace to our custom format:  
-   See `convert_wavlm_from_hf.py`.
-- Fine-tune WavLM for diarization:  
-   See `../diar_ssl/run_stage.sh`.
+- Convert WavLM format from HuggingFace to our custom format: See `convert_wavlm_from_hf.py`.
+- Fine-tune WavLM for diarization: See `../diar_ssl/run_stage.sh`.
 - Start pruning training:
    `bash -i run_stage.sh`.
    
 
 ## Results (collar=0s)
 | System         | Sparsity | Params | MACs | Speedup | AMI  | AISHELL-4 | AliMeeting | Macro |
-|----------------|----------|----------|---------|---------|------|------------|-------------|--------|
+|:----------------|:----------:|:----------:|:---------:|:---------:|:------:|:------------:|:-------------:|:--------:|
 | Fbank          | -        | -        | -    | -   | 19.7 | 12.5       | 21.0        | 17.7   |
 |  WavLM Base+  | 0%       | 94.4M   | 6.9G | -       | 15.6 | 11.8       | 17.7        | 15.0   |
 |    | 80%      | 18.8M   | 1.1G | 4.0×    | 15.7 | 12.1       | 17.9        | 15.2   |
