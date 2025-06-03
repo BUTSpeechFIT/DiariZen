@@ -5,7 +5,7 @@ This directory contains scripts for DiariZen EEND module training and global inf
 ## Results (collar=0s)
 | System     | Features       | AMI  | AISHELL-4 | AliMeeting |
 |:------------|:----------------:|:------:|:------------:|:------------:|
-| [Pyannote3](https://github.com/pyannote/pyannote-audio)  | SincNet        | 22.4 | 12.2       | 24.4       |
+| [Pyannote v3.1](https://github.com/pyannote/pyannote-audio)  | SincNet        | 22.4 | 12.2       | 24.4       |
 | DiariZen   | Fbank          | 19.7 | 12.5       | 21.0       |
 |            | WavLM-frozen   | 17.0 | 11.7       | 19.9       |
 |            | WavLM-updated  | **15.4** | **11.7**       | **17.6**       |
