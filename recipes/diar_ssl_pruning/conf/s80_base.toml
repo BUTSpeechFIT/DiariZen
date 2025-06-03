@@ -1,0 +1,89 @@
+[meta]
+save_dir = "exp"
+seed = 3407
+
+[finetune]
+finetune = false
+
+[trainer]
+path = "trainer_distill_prune.Trainer"
+[trainer.args]
+debug = false
+max_epochs = 30
+gradient_percentile = 90
+gradient_history_size = 1000
+save_max_score = false
+save_ckpt_interval = 1
+max_patience = 5
+max_num_checkpoints = 100
+gradient_accumulation_steps = 1
+validation_interval = 1
+freeze_wavlm = false
+lr_decay = false
+use_one_cycle_lr = false
+# prune
+use_reg = true
+target_sparsity = 0.8
+pre_train_epochs = 0
+sparsity_warmup_epochs = 5    
+
+[optimizer]
+path = "torch.optim.AdamW"
+[optimizer.args]
+distill_lr = 2e-4
+reg_lr = 2e-2
+
+[model]
+path = "diarizen.models.pruning.model_distill_prune.Model"
+[model.args]
+teacher_ckpt = "/YOUR_PATH/wavlm-base-plus-finetuned.bin"
+student_ckpt = "/YOUR_PATH/wavlm-base-plus-finetuned.bin"
+pruning_units = "conv,head,interm"
+distill_layers = "0,4,8,12"
+
+[distill_loss]
+path = "diarizen.models.pruning.utils.DistillLoss"
+[distill_loss.args]
+l2_weight = 0             
+l1_weight = 1           
+cos_weight = 1          
+cos_type = "raw"         
+
+[train_dataset]
+path = "dataset.DiarizationDataset"
+[train_dataset.args]
+scp_file = "data/AMI_AliMeeting_AISHELL4/train/wav.scp"
+rttm_file = "data/AMI_AliMeeting_AISHELL4/train/rttm"
+uem_file = "data/AMI_AliMeeting_AISHELL4/train/all.uem"
+chunk_size = 8
+chunk_shift = 6
+sample_rate = 16000
+model_num_frames = 399
+model_rf_duration = 0.025
+model_rf_step = 0.02
+
+[train_dataset.dataloader]
+batch_size = 16
+num_workers = 1
+drop_last = true
+pin_memory = true
+
+[validate_dataset]
+path = "dataset.DiarizationDataset"
+[validate_dataset.args]
+scp_file = "data/AMI_AliMeeting_AISHELL4/dev/wav.scp"
+rttm_file = "data/AMI_AliMeeting_AISHELL4/dev/rttm"
+uem_file = "data/AMI_AliMeeting_AISHELL4/dev/all.uem"
+chunk_size = 8
+chunk_shift = 8
+sample_rate = 16000
+model_num_frames = 399
+model_rf_duration = 0.025
+model_rf_step = 0.02
+
+[validate_dataset.dataloader]
+batch_size = 16
+num_workers = 1
+drop_last = true
+pin_memory = true
+
