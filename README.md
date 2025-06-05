@@ -83,10 +83,10 @@ If you found this work helpful, please consider citing
   year={2025}
 }
 
-@inproceedings{han2025finetunestructuredpruningcompact,
+@article{han2025fine,
   title={Fine-tune Before Structured Pruning: Towards Compact and Accurate Self-Supervised Models for Speaker Diarization},
-  author={Jiangyu Han and Federico Landini and Johan Rohdin and Anna Silnova and Mireia Diez and Jan Cernocky and Lukas Burget},
-  booktitle={Proc. INTERSPEECH},
+  author={Han, Jiangyu and Landini, Federico and Rohdin, Johan and Silnova, Anna and Diez, Mireia and Cernocky, Jan and Burget, Lukas},
+  journal={arXiv preprint arXiv:2505.24111},
   year={2025}
 }
 
