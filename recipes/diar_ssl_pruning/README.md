@@ -30,6 +30,12 @@ J. Han, F. Landini, J. Rohdin, A. Silnova, M. Diez, J. Cernocky and L. Burget, [
   year={2025}
 }
 
+@article{han2025efficient,
+  title={Efficient and Generalizable Speaker Diarization via Structured Pruning of Self-Supervised Models},
+  author={Han, Jiangyu and P{\'a}lka, Petr and Delcroix, Marc and Landini, Federico and Rohdin, Johan and Cernock{\`y}, Jan and Burget, Luk{\'a}{\v{s}}},
+  journal={arXiv preprint arXiv:2506.18623},
+  year={2025}
+}
 ```
 
 ## Acknowledgments
