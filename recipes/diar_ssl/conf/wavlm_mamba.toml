@@ -1,0 +1,85 @@
+[meta]
+save_dir = "exp"
+seed = 3407
+
+[finetune]
+finetune = false
+
+[trainer]
+path = "trainer_dual_opt.Trainer"
+[trainer.args]
+max_epochs = 100
+gradient_percentile = 90
+gradient_history_size = 1000
+save_max_score = false
+save_ckpt_interval = 1
+max_patience = 10
+max_num_checkpoints = 100
+gradient_accumulation_steps = 1
+validation_interval = 1
+freeze_wavlm = false
+lr_decay = false
+use_one_cycle_lr = false
+
+[optimizer_small]
+path = "torch.optim.AdamW"
+[optimizer_small.args]
+lr = 2e-5
+
+[optimizer_big]
+path = "torch.optim.AdamW"
+[optimizer_big.args]
+lr = 1e-3
+
+[model]
+path = "diarizen.models.eend.model_wavlm_mamba.Model"
+[model.args]
+wavlm_src = "wavlm_base_s80_md"
+wavlm_layer_num = 13
+wavlm_feat_dim = 768
+attention_in = 256
+num_layer = 4
+d_state = 128        
+d_conv = 4
+expand = 2          
+headdim = 64        
+ngroups = 1
+rmsnorm_eps = 1e-5
+bidirectional = true
+bidirectional_merging = "add"
+chunk_size = 8
+output_activate_function = false
+selected_channel = 0
+max_speakers_per_chunk = 10
+
+[train_dataset]
+path = "dataset.DiarizationDataset"
+[train_dataset.args]
+scp_file = "data/AMI_AliMeeting_AISHELL4/train/wav.scp"
+rttm_file = "data/AMI_AliMeeting_AISHELL4/train/rttm"
+uem_file = "data/AMI_AliMeeting_AISHELL4/train/all.uem"
+chunk_size = 8
+chunk_shift = 6
+sample_rate = 16000
+
+[train_dataset.dataloader]
+batch_size = 64
+num_workers = 1
+drop_last = true
+pin_memory = true
+
+[validate_dataset]
+path = "dataset.DiarizationDataset"
+[validate_dataset.args]
+scp_file = "data/AMI_AliMeeting_AISHELL4/dev/wav.scp"
+rttm_file = "data/AMI_AliMeeting_AISHELL4/dev/rttm"
+uem_file = "data/AMI_AliMeeting_AISHELL4/dev/all.uem"
+chunk_size = 8
+chunk_shift = 8
+sample_rate = 16000
+
+[validate_dataset.dataloader]
+batch_size = 32
+num_workers = 1
+drop_last = true
+pin_memory = true 
