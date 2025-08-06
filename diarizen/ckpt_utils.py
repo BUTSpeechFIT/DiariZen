@@ -59,15 +59,31 @@ def load_metric_summary(metric_file, ckpt_path):
         })
     return out_lst
 
-def average_ckpt(ckpt_dir, model, val_metric='Loss', avg_ckpt_num=5, val_mode="prev"):
+def average_ckpt(ckpt_dir, model, wavlm_only=False, val_metric='Loss', avg_ckpt_num=5, val_mode="best"):
+    if os.path.isfile(ckpt_dir):
+        ckpt_loaded = torch.load(ckpt_dir, map_location=torch.device('cpu'))
+        if not wavlm_only:
+            print(f"No model averaging | Fine-tune model from: {ckpt_dir}")
+            model.load_state_dict(ckpt_loaded, strict=True)
+        else:
+            print(f"Only initialize wavlm model from: {ckpt_dir}")
+            wavlm_prefix = "wavlm_model."
+            wavlm_state_dict = {
+                k[len(wavlm_prefix):]: v
+                for k, v in ckpt_loaded.items()
+                if k.startswith(wavlm_prefix)
+            }
+            model.wavlm_model.load_state_dict(wavlm_state_dict, strict=False)
+        return model
+
     if 'checkpoints/epoch_' in ckpt_dir:
-        print(f"No model averaging | Fine-tune model from: {ckpt_dir.split('/')[-1]}")
+        print(f"No model averaging | Fine-tune model from certain epoch: {ckpt_dir.split('/')[-1]}")
         ckpt_loaded = torch.load(os.path.join(ckpt_dir, 'pytorch_model.bin'), map_location=torch.device('cpu'))
         model.load_state_dict(ckpt_loaded)
         return model
 
-    assert val_metric == "Loss" and val_mode == "prev"
-    print(f'averaging previous {avg_ckpt_num} checkpoints to the converged moment...')
+    assert val_metric == "Loss" and val_mode == "best"
+    print(f'averaging best {avg_ckpt_num} checkpoints to the converged moment...')
 
     ckpt_dir = Path(ckpt_dir).expanduser().absolute()
     ckpt_path = ckpt_dir / 'checkpoints'
@@ -80,5 +96,5 @@ def average_ckpt(ckpt_dir, model, val_metric='Loss', avg_ckpt_num=5, val_mode="p
             best_val_metric_idx - avg_ckpt_num + 1 :
             best_val_metric_idx + 1
     ]
-    
+
     return average_checkpoints(model, val_metric_lst_out)
