@@ -1,0 +1,36 @@
+MODEL LICENSE
+=============
+
+The pre-trained model weights released in this repository ("the Models") 
+are licensed under the Creative Commons Attribution-NonCommercial 4.0 
+International License (CC BY-NC 4.0).
+
+Full legal text of the license is available at:
+https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+Summary of terms:
+- Attribution (BY): You must give appropriate credit, provide a link to the license,
+  and indicate if changes were made.
+- NonCommercial (NC): You may not use the Models for commercial purposes.
+
+You are free to:
+- Use the Models for academic research and other non-commercial purposes.
+- Share and redistribute the Models, provided that you include proper attribution
+  to the authors of DiariZen and retain this license notice.
+- Modify or adapt the Models for non-commercial use.
+
+You must not:
+- Use the Models or any derivatives thereof for commercial purposes, 
+  including but not limited to products, services, or paid offerings.
+- Remove or alter this license notice in any copies of the Models.
+
+Reason for this restriction:
+The training data used for the Models includes datasets licensed under terms 
+that forbid commercial usage and/or derivative works 
+(e.g., CC BY-NC, CC BY-NC-ND, or Research Only licenses). 
+Therefore, the Models cannot be used commercially.
+
+Note:
+The source code in this repository is licensed separately under the MIT License 
+(see LICENSE file). This MODEL_LICENSE applies only to the released pre-trained 
+model weights.
