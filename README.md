@@ -101,7 +101,8 @@ If you found this work helpful, please consider citing
 
 
 ## License
-This repository under the [MIT license](https://github.com/BUTSpeechFIT/DiariZen/blob/main/LICENSE).
+- The **code** in this repository is licensed under the [MIT license](https://github.com/BUTSpeechFIT/DiariZen/blob/main/LICENSE).
+- The **pre-trained model weights** are released strictly for **research and non-commercial use only**, in accordance with the licenses of the datasets used for training. Commercial use of the model weights is prohibited. See [MODEL_LICENSE](https://github.com/BUTSpeechFIT/DiariZen/blob/main/MODEL_LICENSE) for details.
 
 ## Contact
 If you have any comment or question, please contact ihan@fit.vut.cz
