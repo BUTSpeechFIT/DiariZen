@@ -232,7 +232,7 @@ class BaseClustering(Pipeline):
         soft_clusters = 2 - e2k_distance
 
         # assign each embedding to the cluster with the most similar centroid
-        if constrained_assignment:
+        if constrained:
             const = soft_clusters.min() - 1.   # const < any_valid_score
             soft_clusters[segmentations.data.sum(1) == 0] = const
             hard_clusters = self.constrained_argmax(soft_clusters)
@@ -686,7 +686,7 @@ class VBxClustering(BaseClustering):
         soft_clusters = 2 - e2k_distance 
 
         # assign each embedding to the cluster with the most similar centroid
-        if constrained_assignment:
+        if self.constrained_assignment:
             const = soft_clusters.min() - 1.   # const < any_valid_score
             soft_clusters[segmentations.data.sum(1) == 0] = const
             hard_clusters = self.constrained_argmax(soft_clusters)
