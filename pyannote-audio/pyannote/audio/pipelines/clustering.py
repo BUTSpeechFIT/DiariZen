@@ -156,12 +156,11 @@ class BaseClustering(Pipeline):
 
         return embeddings[chunk_idx, speaker_idx], chunk_idx, speaker_idx  
 
-    def constrained_argmax(self, soft_clusters: np.ndarray, const_location: np.ndarray = None) -> np.ndarray:
+    def constrained_argmax(self, soft_clusters: np.ndarray) -> np.ndarray:
+        
         soft_clusters = np.nan_to_num(soft_clusters, nan=np.nanmin(soft_clusters))
         num_chunks, num_speakers, num_clusters = soft_clusters.shape
         # num_chunks, num_speakers, num_clusters
-        if const_location is not None:
-            soft_clusters[const_location] = -10000      # TODO: try less ad-hoc options
 
         hard_clusters = -2 * np.ones((num_chunks, num_speakers), dtype=np.int8)
 
@@ -233,7 +232,9 @@ class BaseClustering(Pipeline):
         soft_clusters = 2 - e2k_distance
 
         # assign each embedding to the cluster with the most similar centroid
-        if constrained:
+        if constrained_assignment:
+            const = soft_clusters.min() - 1.   # const < any_valid_score
+            soft_clusters[segmentations.data.sum(1) == 0] = const
             hard_clusters = self.constrained_argmax(soft_clusters)
         else:
             hard_clusters = np.argmax(soft_clusters, axis=2)
@@ -685,11 +686,10 @@ class VBxClustering(BaseClustering):
         soft_clusters = 2 - e2k_distance 
 
         # assign each embedding to the cluster with the most similar centroid
-        if self.constrained_assignment:
-            hard_clusters = self.constrained_argmax(
-                soft_clusters, 
-                const_location=None
-            )
+        if constrained_assignment:
+            const = soft_clusters.min() - 1.   # const < any_valid_score
+            soft_clusters[segmentations.data.sum(1) == 0] = const
+            hard_clusters = self.constrained_argmax(soft_clusters)
         else:
             hard_clusters = np.argmax(soft_clusters, axis=2)
 
