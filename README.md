@@ -59,18 +59,20 @@ We train DiariZen models on a compound dataset composed of the datasets listed i
 - **No domain adaptation** is applied to any individual dataset.
 - All experiments use the **same clustering hyperparameters** across datasets.
 
-| Dataset       | [Pyannote v3.1](https://github.com/pyannote/pyannote-audio) | [DiariZen-Base-s80](https://huggingface.co/BUT-FIT/diarizen-wavlm-base-s80-md) |[DiariZen-Large-s80](https://huggingface.co/BUT-FIT/diarizen-wavlm-large-s80-md) |
-|:---------------|:-----------:|:-----------:|:-----------:|
-| AMI-SDM           | 22.4      | 15.8 | 13.9 |
-| AISHELL-4     | 12.2      | 10.7 | 10.1 |
-| AliMeeting far    | 24.4      | 14.1 | 10.8 | 
-| NOTSOFAR-1    | -      | 20.3 |   16.7 |
-| MSDWild       | 25.3      | 17.4 | 15.8 |
-| DIHARD3 full      | 21.7      | 15.9 | 14.5 |
-| RAMC          | 22.2      | 11.4 | 11.0 |
-| VoxConverse   | 11.3      | 9.7 | 9.1 |
+| Dataset       | [Pyannote v3.1](https://github.com/pyannote/pyannote-audio) | [DiariZen-Base-s80](https://huggingface.co/BUT-FIT/diarizen-wavlm-base-s80-md) |[DiariZen-Large-s80](https://huggingface.co/BUT-FIT/diarizen-wavlm-large-s80-md) | [DiariZen-Large-s80-v2](https://huggingface.co/BUT-FIT/diarizen-wavlm-large-s80-md-v2)
+|:---------------|:-----------:|:-----------:|:-----------:| :-----------:|
+| AMI-SDM           | 22.4      | 15.8 | 14.0 | 13.9 |
+| AISHELL-4     | 12.2      | 10.7 | 9.8 | 10.1 |
+| AliMeeting far    | 24.4      | 14.1 | 12.5 | **10.8** | 
+| NOTSOFAR-1    | -      | 20.3 | 17.9 | **16.7** |
+| MSDWild       | 25.3      | 17.4 | 15.6 | 15.8 |
+| DIHARD3 full      | 21.7      | 15.9 | 14.5 | 14.5 |
+| RAMC          | 22.2      | 11.4 | 11.0 | 11.0 |
+| VoxConverse   | 11.3      | 9.7 | 9.2 | 9.1 |
 
 ## Updates
+2025-12-09: Updated benchmarks with DiariZen-Large-s80-v2.
+
 2025-06-03: Uploaded structured pruning recipes, released new pre-trained models, and updated multiple benchmark results.
 
 ## Citations
