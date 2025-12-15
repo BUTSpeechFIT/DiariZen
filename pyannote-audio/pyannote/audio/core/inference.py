@@ -527,7 +527,7 @@ class Inference(BaseInference):
         warm_up: Tuple[float, float] = (0.0, 0.0),
         epsilon: float = 1e-12,
         hamming: bool = False,
-        missing: float = np.NaN,
+        missing: float = np.nan,
         skip_average: bool = False,
     ) -> SlidingWindowFeature:
         """Aggregation
@@ -541,7 +541,7 @@ class Inference(BaseInference):
         warm_up : (float, float) tuple, optional
             Left/right warm up duration (in seconds).
         missing : float, optional
-            Value used to replace missing (ie all NaNs) values.
+            Value used to replace missing (ie all nans) values.
         skip_average : bool, optional
             Skip final averaging step.
 
