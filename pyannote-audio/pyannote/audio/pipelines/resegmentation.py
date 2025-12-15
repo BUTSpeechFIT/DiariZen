@@ -228,7 +228,7 @@ class Resegmentation(SpeakerDiarizationMixin, Pipeline):
             num_speakers = self._num_speakers
 
         # find optimal permutation with respect to the original diarization
-        permutated_segmentations = np.full_like(segmentations.data, np.NAN)
+        permutated_segmentations = np.full_like(segmentations.data, np.nan)
         _, num_frames, _ = permutated_segmentations.shape
         for c, (chunk, segmentation) in enumerate(segmentations):
             local_diarization = diarization.crop(chunk)[np.newaxis, :num_frames]
