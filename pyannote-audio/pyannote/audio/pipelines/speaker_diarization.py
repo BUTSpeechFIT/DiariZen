@@ -305,7 +305,7 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
                 )
                 # waveform: (1, num_samples) torch.Tensor
 
-                # mask may contain NaN (in case of partial stitching)
+                # mask may contain nan (in case of partial stitching)
                 masks = np.nan_to_num(masks, nan=0.0).astype(np.float32)
                 clean_masks = np.nan_to_num(clean_masks, nan=0.0).astype(np.float32)
 

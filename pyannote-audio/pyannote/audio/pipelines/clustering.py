@@ -114,7 +114,7 @@ class BaseClustering(Pipeline):
         segmentations: Optional[SlidingWindowFeature] = None,
         min_frames_ratio: int = 0.1
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """Filter NaN embeddings and downsample embeddings
+        """Filter nan embeddings and downsample embeddings
 
         Parameters
         ----------
