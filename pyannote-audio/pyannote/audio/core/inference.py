@@ -608,7 +608,7 @@ class Inference(BaseInference):
         )
 
         # aggregated_mask[i] will be used to indicate whether
-        # at least one non-NAN frame contributed to frame #i
+        # at least one non-nan frame contributed to frame #i
         aggregated_mask: np.ndarray = np.zeros(
             (num_frames, num_classes), dtype=np.float32
         )
