@@ -316,7 +316,10 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
                         used_mask = clean_mask
                     else:
                         used_mask = mask
-
+                        
+                    if not used_mask.any():
+                        continue  # do not extract embedding for empty local EEND streams
+                        
                     yield waveform[None], torch.from_numpy(used_mask)[None]
                     # w: (1, 1, num_samples) torch.Tensor
                     # m: (1, num_frames) torch.Tensor
@@ -327,7 +330,9 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
             fillvalue=(None, None),
         )
 
-        batch_count = math.ceil(num_chunks * num_speakers / self.embedding_batch_size)
+        active_streams = binary_segmentations.data.sum(1) > 0
+        batch_count = math.ceil(active_streams.sum() / self.embedding_batch_size)
+        #batch_count = math.ceil(num_chunks * num_speakers / self.embedding_batch_size)
 
         embedding_batches = []
 
@@ -355,7 +360,12 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
 
         embedding_batches = np.vstack(embedding_batches)
 
-        embeddings = rearrange(embedding_batches, "(c s) d -> c s d", c=num_chunks)
+        embed_dim = embedding_batches.shape[-1]
+        
+        # add const. just to have save cos-sim later, embeddings from non-active streams are not used
+        embeddings = np.zeros((num_chunks, num_speakers, embed_dim), dtype=embedding_batches.dtype) + 1e-9
+        embeddings[active_streams] = embedding_batches
+        #embeddings = rearrange(embedding_batches, "(c s) d -> c s d", c=num_chunks)
 
         # caching embeddings for subsequent trials
         # (see comments at the top of this method for more details)
