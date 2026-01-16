@@ -50,7 +50,12 @@ from diarizen.utils import instantiate
 
 from pyannote.core import SlidingWindow
 
-from pyannote.audio import __version__
+try:
+    from importlib.metadata import version
+    __version__ = version("pyannote.audio")
+except Exception:
+    __version__ = "unknown"
+
 from pyannote.audio.core.io import Audio
 from pyannote.audio.core.task import (
     Problem, 

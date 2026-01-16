@@ -37,7 +37,13 @@ from pyannote.core.utils.helper import get_class_by_name
 from pyannote.database import FileFinder, ProtocolFile
 from pyannote.pipeline import Pipeline as _Pipeline
 
-from pyannote.audio import Audio, __version__
+from pyannote.audio import Audio
+
+try:
+    from importlib.metadata import version
+    __version__ = version("pyannote.audio")
+except Exception:
+    __version__ = "unknown"
 from pyannote.audio.core.inference import BaseInference
 from pyannote.audio.core.io import AudioFile
 from pyannote.audio.core.model import CACHE_DIR, Model
