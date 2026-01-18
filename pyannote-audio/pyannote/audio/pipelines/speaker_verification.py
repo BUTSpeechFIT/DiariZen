@@ -64,6 +64,8 @@ try:
 except ImportError:
     ONNX_IS_AVAILABLE = False
 
+REDIMNET_IS_AVAILABLE = True  # Uses torch.hub, always available if torch is installed
+
 
 class NeMoPretrainedSpeakerEmbedding(BaseInference):
     def __init__(
@@ -609,6 +611,146 @@ class ONNXWeSpeakerPretrainedSpeakerEmbedding(BaseInference):
         return embeddings
 
 
+class ReDimNetPretrainedSpeakerEmbedding(BaseInference):
+    """Pretrained ReDimNet speaker embedding via torch.hub
+
+    Parameters
+    ----------
+    embedding : str
+        ReDimNet model specification in format "redimnet:<model_name>:<train_type>:<dataset>"
+        e.g., "redimnet:b0:ft_lm:vox2" or just "redimnet" for defaults
+    device : torch.device, optional
+        Device
+
+    Usage
+    -----
+    >>> get_embedding = ReDimNetPretrainedSpeakerEmbedding("redimnet:b0:ft_lm:vox2")
+    >>> assert waveforms.ndim == 3
+    >>> batch_size, num_channels, num_samples = waveforms.shape
+    >>> assert num_channels == 1
+    >>> embeddings = get_embedding(waveforms)
+    >>> assert embeddings.ndim == 2
+    >>> assert embeddings.shape[0] == batch_size
+    """
+
+    def __init__(
+        self,
+        embedding: Text = "redimnet:b0:ft_lm:vox2",
+        device: Optional[torch.device] = None,
+    ):
+        super().__init__()
+        self.embedding = embedding
+        self.device = device or torch.device("cpu")
+
+        # Parse embedding string: "redimnet:model_name:train_type:dataset"
+        parts = embedding.split(":")
+        self.model_name = parts[1] if len(parts) > 1 else "b0"
+        self.train_type = parts[2] if len(parts) > 2 else "ft_lm"
+        self.dataset = parts[3] if len(parts) > 3 else "vox2"
+
+        print(f"Loading ReDimNet: model_name={self.model_name}, train_type={self.train_type}, dataset={self.dataset}")
+
+        self.model_ = torch.hub.load(
+            'IDRnD/ReDimNet', 'ReDimNet',
+            model_name=self.model_name,
+            train_type=self.train_type,
+            dataset=self.dataset
+        )
+        self.model_.eval()
+        self.model_.to(self.device)
+
+    def to(self, device: torch.device):
+        if not isinstance(device, torch.device):
+            raise TypeError(
+                f"`device` must be an instance of `torch.device`, got `{type(device).__name__}`"
+            )
+        self.model_.to(device)
+        self.device = device
+        return self
+
+    @cached_property
+    def sample_rate(self) -> int:
+        return 16000
+
+    @cached_property
+    def dimension(self) -> int:
+        dummy_waveforms = torch.rand(1, 16000).to(self.device)
+        with torch.inference_mode():
+            embeddings = self.model_(dummy_waveforms)
+        return embeddings.shape[-1]
+
+    @cached_property
+    def metric(self) -> str:
+        return "cosine"
+
+    @cached_property
+    def min_num_samples(self) -> int:
+        with torch.inference_mode():
+            lower, upper = 2, round(0.5 * self.sample_rate)
+            middle = (lower + upper) // 2
+            while lower + 1 < upper:
+                try:
+                    _ = self.model_(torch.randn(1, middle).to(self.device))
+                    upper = middle
+                except Exception:
+                    lower = middle
+                middle = (lower + upper) // 2
+        return upper
+
+    def __call__(
+        self, waveforms: torch.Tensor, masks: Optional[torch.Tensor] = None
+    ) -> np.ndarray:
+        """
+        Parameters
+        ----------
+        waveforms : (batch_size, num_channels, num_samples)
+            Only num_channels == 1 is supported.
+        masks : (batch_size, num_samples), optional
+
+        Returns
+        -------
+        embeddings : (batch_size, dimension)
+        """
+        batch_size, num_channels, num_samples = waveforms.shape
+        assert num_channels == 1
+
+        waveforms = waveforms.squeeze(dim=1)  # (batch_size, num_samples)
+
+        if masks is None:
+            with torch.inference_mode():
+                embeddings = self.model_(waveforms.to(self.device))
+            return embeddings.cpu().numpy()
+
+        # Handle masks: extract non-masked portions
+        batch_size_masks, _ = masks.shape
+        assert batch_size == batch_size_masks
+
+        imasks = F.interpolate(
+            masks.unsqueeze(dim=1), size=num_samples, mode="nearest"
+        ).squeeze(dim=1)
+        imasks = imasks > 0.5
+
+        signals = pad_sequence(
+            [waveform[imask].contiguous() for waveform, imask in zip(waveforms, imasks)],
+            batch_first=True,
+        )
+
+        wav_lens = imasks.sum(dim=1)
+        max_len = wav_lens.max()
+
+        # corner case: every signal is too short
+        if max_len < self.min_num_samples:
+            return np.NAN * np.zeros((batch_size, self.dimension))
+
+        too_short = wav_lens < self.min_num_samples
+
+        with torch.inference_mode():
+            embeddings = self.model_(signals.to(self.device)).cpu().numpy()
+
+        embeddings[too_short.cpu().numpy()] = np.NAN
+        return embeddings
+
+
 class PyannoteAudioPretrainedSpeakerEmbedding(BaseInference):
     """Pretrained pyannote.audio speaker embedding
 
@@ -756,6 +898,9 @@ def PretrainedSpeakerEmbedding(
 
     elif isinstance(embedding, str) and "wespeaker" in embedding:
         return ONNXWeSpeakerPretrainedSpeakerEmbedding(embedding, device=device)
+
+    elif isinstance(embedding, str) and embedding.startswith("redimnet"):
+        return ReDimNetPretrainedSpeakerEmbedding(embedding, device=device)
 
     else:
         # fallback to pyannote in case we are loading a local model

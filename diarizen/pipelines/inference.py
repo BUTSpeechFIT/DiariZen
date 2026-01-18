@@ -93,10 +93,11 @@ class DiariZenPipeline(SpeakerDiarizationPipeline):
 
     @classmethod
     def from_pretrained(
-        cls, 
-        repo_id: str, 
+        cls,
+        repo_id: str,
         cache_dir: str = None,
         rttm_out_dir: str = None,
+        embedding_model: str = None,
     ) -> "DiariZenPipeline":
         diarizen_hub = snapshot_download(
             repo_id=repo_id,
@@ -104,12 +105,16 @@ class DiariZenPipeline(SpeakerDiarizationPipeline):
             local_files_only=cache_dir is not None
         )
 
-        embedding_model = hf_hub_download(
-            repo_id="pyannote/wespeaker-voxceleb-resnet34-LM",
-            filename="pytorch_model.bin",
-            cache_dir=cache_dir,
-            local_files_only=cache_dir is not None
-        )
+        # If no embedding_model specified, use default wespeaker
+        if embedding_model is None:
+            embedding_model = hf_hub_download(
+                repo_id="pyannote/wespeaker-voxceleb-resnet34-LM",
+                filename="pytorch_model.bin",
+                cache_dir=cache_dir,
+                local_files_only=cache_dir is not None
+            )
+        # For redimnet, pass the string directly (e.g., "redimnet:b0:ft_lm:vox2")
+        # The PretrainedSpeakerEmbedding function will handle loading via torch.hub
 
         return cls(
             diarizen_hub=Path(diarizen_hub).expanduser().absolute(),
