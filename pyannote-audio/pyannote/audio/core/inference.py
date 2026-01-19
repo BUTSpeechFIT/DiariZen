@@ -223,6 +223,8 @@ class Inference(BaseInference):
                     raise exception
                 
         def __convert(output: torch.Tensor, conversion: nn.Module, **kwargs):
+            if isinstance(conversion, nn.Identity):
+                return conversion(output).cpu().numpy()
             return conversion(output, soft=soft).cpu().numpy()
 
         return map_with_specifications(
