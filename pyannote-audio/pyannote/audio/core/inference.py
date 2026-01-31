@@ -225,9 +225,14 @@ class Inference(BaseInference):
         def __convert(output: torch.Tensor, conversion: nn.Module, **kwargs):
             return conversion(output, soft=soft).cpu().numpy()
 
-        return map_with_specifications(
-            self.model.specifications, __convert, outputs, self.conversion
-        )
+        if not isinstance(outputs, tuple):
+            return map_with_specifications(
+                self.model.specifications, __convert, outputs, self.conversion
+            )
+        else:
+            return map_with_specifications(
+                self.model.specifications, __convert, outputs[0], self.conversion
+            ), outputs[1].cpu().numpy()
 
     def slide(
         self,
@@ -337,9 +342,20 @@ class Inference(BaseInference):
         def __vstack(output: List[np.ndarray], **kwargs) -> np.ndarray:
             return np.vstack(output)
 
-        outputs: Union[np.ndarray, Tuple[np.ndarray]] = map_with_specifications(
-            self.model.specifications, __vstack, outputs
-        )
+        if not isinstance(batch_outputs, tuple):
+            outputs: Union[np.ndarray, Tuple[np.ndarray]] = map_with_specifications(
+                self.model.specifications, __vstack, outputs
+            )
+        else:
+            outputs_0 = [out[0] for out in outputs]
+            outputs_0 = map_with_specifications(
+                self.model.specifications, __vstack, outputs_0
+            )
+            outputs_1 = [out[1] for out in outputs]
+            outputs_1 = map_with_specifications(
+                self.model.specifications, __vstack, outputs_1
+            )
+            outputs = (outputs_0, outputs_1)
 
         def __aggregate(
             outputs: np.ndarray,
@@ -360,7 +376,10 @@ class Inference(BaseInference):
                 frames = SlidingWindow(
                     start=0.0, duration=self.duration, step=self.step
                 )
-                return SlidingWindowFeature(outputs, frames)
+                if not isinstance(outputs, tuple):
+                    return SlidingWindowFeature(outputs, frames)
+                else:
+                    return SlidingWindowFeature(outputs[0], frames), outputs[1]
 
             if self.pre_aggregation_hook is not None:
                 outputs = self.pre_aggregation_hook(outputs)

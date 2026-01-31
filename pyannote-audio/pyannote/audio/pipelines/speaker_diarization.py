@@ -131,6 +131,8 @@ class SpeakerDiarization(SpeakerDiarizationMixin, Pipeline):
 
         self.segmentation_model = segmentation
         model: Model = get_model(segmentation, config=config, use_auth_token=use_auth_token)
+        
+        self.model = model
 
         self.segmentation_step = segmentation_step
 
