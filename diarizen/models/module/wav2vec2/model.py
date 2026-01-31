@@ -117,6 +117,32 @@ class Wav2Vec2Model(Module):
             x = components.GradMultiply.apply(x, self.feature_grad_mult)
         x = self.encoder.extract_features(x, lengths, num_layers)   # (num_layers+1,), including the input
         return x, lengths
+
+    @torch.jit.export
+    def extract_features_mc(
+        self,
+        waveforms: Tensor,
+        lengths: Optional[Tensor] = None,
+        num_layers: Optional[int] = None,
+        channel_fusions: Module = None
+    ) -> Tuple[List[Tensor], Optional[Tensor]]:
+        if self.normalize_waveform:
+            if lengths is not None:
+                waveforms = [
+                    F.layer_norm(wave[:length], (length,)) for wave, length in zip(waveforms, lengths)
+                ]
+                waveforms = torch.nn.utils.rnn.pad_sequence(waveforms, batch_first=True)
+            else:
+                waveforms = F.layer_norm(waveforms, waveforms.shape[-1:])
+
+        batch_size, channel, time = waveforms.shape 
+        waveforms = waveforms.reshape(-1, time)
+        x, lengths = self.feature_extractor(waveforms, lengths)
+        x = x.reshape(batch_size, channel, -1, x.shape[-1])
+        if self.feature_grad_mult != 1.0:
+            x = components.GradMultiply.apply(x, self.feature_grad_mult)
+        x = self.encoder.extract_features_mc(x, lengths, num_layers, channel_fusions=channel_fusions)   # (num_layers+1,), including the input
+        return x, lengths
     
     def get_num_params(self):
         """Calculate the current size."""

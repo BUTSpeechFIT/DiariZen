@@ -20,6 +20,8 @@ import torch
 from torch import nn, Tensor
 from torch.nn import Module, Parameter
 
+import torch.nn.functional as F
+
 from .hardconcrete import HardConcrete
 from .pruning_utils import (
     prune_linear_layer,
@@ -964,6 +966,7 @@ class Transformer(Module):
         layers: Module,
         layer_norm_first: bool,
         layer_drop: float,
+        total_num_heads: int
     ):
         super().__init__()
         self.pos_conv_embed = pos_conv_embed
@@ -972,6 +975,7 @@ class Transformer(Module):
         self.layer_drop = layer_drop
         self.dropout = nn.Dropout(dropout)
         self.layers = layers
+        self.total_num_heads = total_num_heads
 
     def _preprocess(self, x: Tensor):
         x = x + self.pos_conv_embed(x)
@@ -1019,6 +1023,52 @@ class Transformer(Module):
                 return ret
         return ret
     
+    def get_intermediate_outputs_mc(
+        self,
+        x: Tensor,      
+        attention_mask: Optional[Tensor] = None,
+        num_layers: Optional[int] = None,
+        position_bias: Optional[Tensor] = None,
+        channel_fusions: Module = None
+    ) -> List[Tensor]:
+        if num_layers is not None:
+            if not 0 < num_layers <= len(self.layers):
+                raise ValueError(f"`num_layers` must be between [1, {len(self.layers)}]")
+
+        batch_size, channel, time, _ = x.shape
+        x = x.reshape(-1, time, x.shape[-1])
+        
+        ret: List[Tensor] = []
+        x = self._preprocess(x)
+        
+        x = channel_fusions[0](x.reshape(batch_size, channel, time, -1))
+        ret.append(x)
+
+        x = x.reshape(-1, time, x.shape[-1])
+        for idx, layer in enumerate(self.layers, 1):
+            if idx < len(channel_fusions):
+                x, position_bias = layer(x, attention_mask, position_bias=position_bias)
+                x = channel_fusions[idx](x.reshape(batch_size, channel, time, -1))      # batch, channel, time, feat
+                ret.append(x)
+                x = x.reshape(-1, time, x.shape[-1])
+            elif idx == len(channel_fusions):
+                x = x.reshape(batch_size, channel, time, -1) 
+                x = torch.mean(x, 1)    # B, T, N
+
+                src_len = position_bias.shape[-1]
+                position_bias = position_bias.reshape(batch_size, channel, self.total_num_heads, src_len, src_len)
+                position_bias = torch.mean(position_bias, 1)
+                position_bias = position_bias.reshape(-1, src_len, src_len)
+                
+                x, position_bias = layer(x, attention_mask, position_bias=position_bias)
+                ret.append(x)
+            else:
+                x, position_bias = layer(x, attention_mask, position_bias=position_bias)
+                ret.append(x)
+            if num_layers is not None and len(ret) >= num_layers:
+                return ret
+        return ret
+
     def get_num_params(self):
         # pos_conv_embed and layer_norm
         num_params = sum(p.numel() for p in self.pos_conv_embed.parameters()) + self.pos_conv_embed.embed_dim * 2
@@ -1106,6 +1156,18 @@ class Encoder(Module):
     ) -> List[Tensor]:
         x, masks = self._preprocess(features, lengths)
         interm = self.transformer.get_intermediate_outputs(x, attention_mask=masks, num_layers=num_layers)
+        return interm
+
+    def extract_features_mc(
+        self,
+        features: Tensor,
+        lengths: Optional[Tensor] = None,
+        num_layers: Optional[int] = None,
+        channel_fusions: Module = None
+    ) -> List[Tensor]:
+        batch_size, channel, _, _ = features.shape 
+        x, masks = self._preprocess(features, lengths)      # B, C, T, N
+        interm = self.transformer.get_intermediate_outputs_mc(x, attention_mask=masks, num_layers=num_layers, channel_fusions=channel_fusions)
         return interm
     
     def get_num_params(self, in_features):
@@ -1532,6 +1594,7 @@ def _get_wavlm_encoder(
         layers=encoder_layers,
         layer_norm_first=not layer_norm_first,
         layer_drop=layer_drop,
+        total_num_heads = total_num_heads[0]        # for wavlm bias
     )
     return Encoder(feature_projection, transformer)
 
