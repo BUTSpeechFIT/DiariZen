@@ -91,11 +91,11 @@ class Trainer(BaseTrainer):
             self.expected_sparsity_cur_epoch = round(cur_expected_sparsity.item(), 3)
         
         return {
-            "Loss": loss, 
-            "Loss_distill": loss_distill, 
-            "Loss_l1": loss_l1, 
-            "Loss_cos": loss_cos,
-            "Loss_reg": loss_reg,
+            "Loss": loss.detach().float(), 
+            "Loss_distill": loss_distill.detach().float(), 
+            "Loss_l1": loss_l1.detach().float(), 
+            "Loss_cos": loss_cos.detach().float(),
+            "Loss_reg": loss_reg.detach().float(),
             "sparsity_expected": cur_expected_sparsity,
             "sparsity_target": cur_target_sparsity,
             "lambda1": self.lambda1,
@@ -120,14 +120,20 @@ class Trainer(BaseTrainer):
         
         loss = loss_distill + loss_reg
         
-        return {"Loss": loss, "Loss_distill": loss_distill, "Loss_l1": loss_l1, "Loss_cos": loss_cos, "Loss_reg": loss_reg}
+        return {
+            "Loss": loss.detach().float(),
+            "Loss_distill": loss_distill.detach().float(),
+            "Loss_l1": loss_l1.detach().float(),
+            "Loss_cos": loss_cos.detach().float(),
+            "Loss_reg": loss_reg.detach().float(),
+        }
 
     def validation_epoch_end(self, validation_epoch_output):
         metric_keys = validation_epoch_output[0].keys()
         # Compute mean loss on all loss items on a epoch
         for key in metric_keys:
-            metric_items = [torch.mean(step_out[key]) for step_out in validation_epoch_output]
-            metric_mean = torch.mean(torch.tensor(metric_items))
+            metric_items = [step_out[key] for step_out in validation_epoch_output]  # float
+            metric_mean = sum(metric_items) / len(metric_items)
             if key == "Loss":
                 Loss_val = metric_mean
             if key == "Loss_distill":
@@ -135,5 +141,5 @@ class Trainer(BaseTrainer):
             if key == "Loss_reg":
                 Loss_reg_val = metric_mean
             self.writer.add_scalar(f"Validation_Epoch/{key}", metric_mean, self.state.epochs_trained)
-        logger.info(f"Validation Loss | Loss_distill | Loss_reg on epoch {self.state.epochs_trained}: {round(Loss_val.item(), 3)} | {round(Loss_distill_val.item(), 3)} | {round(Loss_reg_val.item(), 3)}")
+        logger.info(f"Validation Loss | Loss_distill | Loss_reg on epoch {self.state.epochs_trained}: {round(Loss_val, 3)} | {round(Loss_distill_val, 3)} | {round(Loss_reg_val, 3)}")
         return Loss_distill_val

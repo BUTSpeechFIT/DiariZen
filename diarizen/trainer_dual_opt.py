@@ -552,7 +552,10 @@ class Trainer:
                 ...
             }
             """
-            gathered_step_output = self.accelerator.gather_for_metrics(step_output)
+            gathered_step_output = {
+                k: self.accelerator.gather_for_metrics(v).mean().item()
+                for k, v in step_output.items()
+            }
             validation_output.append(gathered_step_output)
 
         logger.info("Validation inference finished, begin validation epoch end...")

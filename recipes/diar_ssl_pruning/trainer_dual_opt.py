@@ -69,7 +69,7 @@ class Trainer(BaseTrainer):
         self.optimizer_small.step()
         self.optimizer_big.step()
         
-        return {"Loss": loss}
+        return {"Loss": loss.detach().float()}
 
     def validation_step(self, batch, batch_idx, dataloader_idx=0):
         xs, target = batch['xs'], batch['ts'] 
@@ -102,20 +102,26 @@ class Trainer(BaseTrainer):
             val_Miss = torch.zeros_like(val_metrics['DiarizationErrorRate/Miss'])
             val_Confusion = torch.zeros_like(val_metrics['DiarizationErrorRate/Confusion'])
 
-        return {"Loss": loss, "DER": val_DER, "FA": val_FA, "Miss": val_Miss, "Confusion": val_Confusion}
+        return {
+            "Loss": loss.detach().float(),
+            "DER": val_DER.detach().float(),
+            "FA": val_FA.detach().float(),
+            "Miss": val_Miss.detach().float(),
+            "Confusion": val_Confusion.detach().float(),
+        }
 
     def validation_epoch_end(self, validation_epoch_output):
         metric_keys = validation_epoch_output[0].keys()
         # Compute mean loss on all loss items on a epoch
         for key in metric_keys:
-            metric_items = [torch.mean(step_out[key]) for step_out in validation_epoch_output]
-            metric_mean = torch.mean(torch.tensor(metric_items))
+            metric_items = [step_out[key] for step_out in validation_epoch_output]  # float
+            metric_mean = sum(metric_items) / len(metric_items)
             if key == "Loss":
                 Loss_val = metric_mean
             if key == "DER":
                 DER_val = metric_mean
             self.writer.add_scalar(f"Validation_Epoch/{key}", metric_mean, self.state.epochs_trained)
-        logger.info(f"Validation Loss/DER on epoch {self.state.epochs_trained}: {round(Loss_val.item(), 3)} / {round(DER_val.item(), 3)}")
+        logger.info(f"Validation Loss/DER on epoch {self.state.epochs_trained}: {round(Loss_val, 3)} / {round(DER_val, 3)}")
         # metric reset
         self.unwrap_model.validation_metric.reset()
         return Loss_val
