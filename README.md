@@ -71,6 +71,8 @@ We train DiariZen models on a compound dataset composed of the datasets listed i
 | VoxConverse   | 11.3      | 9.7 | 9.2 | 9.1 |
 
 ## Updates
+2026-01-31: Updated multi-channel WavLM support for speaker diarization.
+
 2025-12-09: Updated benchmarks with DiariZen-Large-s80-v2.
 
 2025-06-03: Uploaded structured pruning recipes, released new pre-trained models, and updated multiple benchmark results.
