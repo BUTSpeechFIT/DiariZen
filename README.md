@@ -108,5 +108,12 @@ If you found this work helpful, please consider citing
 - The **code** in this repository is licensed under the [MIT license](https://github.com/BUTSpeechFIT/DiariZen/blob/main/LICENSE).
 - The **pre-trained model weights** are released strictly for **research and non-commercial use only**, in accordance with the licenses of the datasets used for training. Commercial use of the model weights is prohibited. See [MODEL_LICENSE](https://github.com/BUTSpeechFIT/DiariZen/blob/main/MODEL_LICENSE) for details.
 
+### Important Compliance Note
+The **CC BY-NC 4.0** license for model weights is chosen to ensure maximum compliance with the most restrictive source datasets used during training (e.g., **RAMC**, **MSDWild**, and **DIHARD-3**), which strictly prohibit commercial use.
+
+**Regarding License Compatibility:** We acknowledge that certain datasets in our training mixture (e.g., **AISHELL-4**, **AliMeeting**) carry a **CC BY-SA 4.0** (ShareAlike) license. Under the assumption that model weights could be viewed as "derivative works," a logical conflict arises between the "Must allow commercial use" (SA) and "Must forbid commercial use" (NC) requirements.
+
+To prioritize the protection of non-commercial data providers and to prevent unauthorized commercial exploitation, we have applied the **NC (Non-Commercial)** restriction to this specific release. By downloading these weights, you agree:
+
 ## Contact
 If you have any comment or question, please contact ihan@fit.vut.cz
