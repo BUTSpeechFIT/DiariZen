@@ -16,7 +16,7 @@ Summary of terms:
 You are free to:
 - Use the Models for academic research and other non-commercial purposes.
 - Share and redistribute the Models, provided that you include proper attribution
-  to the authors of DiariZen and retain this license notice.
+  to the authors and retain this license notice.
 - Modify or adapt the Models for non-commercial use.
 
 You must not:
@@ -25,10 +25,18 @@ You must not:
 - Remove or alter this license notice in any copies of the Models.
 
 Reason for this restriction:
-The training data used for the Models includes datasets licensed under terms 
-that forbid commercial usage and/or derivative works 
-(e.g., CC BY-NC, CC BY-NC-ND, or Research Only licenses). 
-Therefore, the Models cannot be used commercially.
+The Models are trained on a mixture of datasets, including those licensed under 
+terms that strictly prohibit commercial usage (e.g., RAMC, MSDWild, and DIHARD-3). 
+To respect the restrictive terms of all data providers and ensure legal 
+compliance, the Models are released for research purposes only.
+
+Note on License Compatibility:
+We acknowledge that certain training datasets (e.g., AISHELL-4, AliMeeting) 
+carry a CC BY-SA 4.0 license. However, due to the concurrent use of 
+Non-Commercial (NC) datasets, providing a commercial-friendly SA license is 
+logically incompatible for this specific release. As this project is part of 
+an ongoing PhD research, we prioritize maximum compliance with the most 
+restrictive source terms.
 
 Note:
 The source code in this repository is licensed separately under the MIT License 
