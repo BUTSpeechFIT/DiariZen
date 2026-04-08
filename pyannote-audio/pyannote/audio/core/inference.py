@@ -221,7 +221,7 @@ class Inference(BaseInference):
                     )
                 else:
                     raise exception
-                
+
         def __convert(output: torch.Tensor, conversion: nn.Module, **kwargs):
             return conversion(output, soft=soft).cpu().numpy()
 
@@ -342,7 +342,8 @@ class Inference(BaseInference):
         def __vstack(output: List[np.ndarray], **kwargs) -> np.ndarray:
             return np.vstack(output)
 
-        if not isinstance(batch_outputs, tuple):
+        format_example = batch_outputs if 'batch_outputs' in locals() else last_outputs
+        if not isinstance(format_example, tuple):
             outputs: Union[np.ndarray, Tuple[np.ndarray]] = map_with_specifications(
                 self.model.specifications, __vstack, outputs
             )
@@ -654,7 +655,7 @@ class Inference(BaseInference):
                 aggregated_mask[start_frame : start_frame + num_frames_per_chunk],
                 mask,
             )
-          
+
         if skip_average:
             average = aggregated_output
         else:
