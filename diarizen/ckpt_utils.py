@@ -64,7 +64,7 @@ def average_ckpt(ckpt_dir, model, wavlm_only=False, val_metric='Loss', avg_ckpt_
         ckpt_loaded = torch.load(ckpt_dir, map_location=torch.device('cpu'))
         if not wavlm_only:
             print(f"No model averaging | Fine-tune model from: {ckpt_dir}")
-            model.load_state_dict(ckpt_loaded, strict=True)
+            model.load_state_dict(ckpt_loaded, strict=False)
         else:
             print(f"Only initialize wavlm model from: {ckpt_dir}")
             wavlm_prefix = "wavlm_model."

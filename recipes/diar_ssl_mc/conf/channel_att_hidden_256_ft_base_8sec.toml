@@ -4,7 +4,6 @@ seed = 3407
 
 [finetune]
 finetune = true
-avg_ckpt_num = 1
 ckpt_dir = "/YOUR_PATH/huggingface_hub/diarizen-wavlm-base-s80-md/pytorch_model.bin"
 
 [trainer]

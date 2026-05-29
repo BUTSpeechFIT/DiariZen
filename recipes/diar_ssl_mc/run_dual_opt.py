@@ -33,7 +33,7 @@ def run(config, resume):
     
     if config["finetune"]["finetune"]:
         accelerator.print('fine-tuning...')
-        model = average_ckpt(config["finetune"]["ckpt_dir"], model, wavlm_only=config["finetune"]["wavlm_only"])    # 
+        model = average_ckpt(config["finetune"]["ckpt_dir"], model)    
 
     optimizer_small = instantiate(
         config["optimizer_small"]["path"],
